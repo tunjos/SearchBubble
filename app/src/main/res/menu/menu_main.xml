@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_donate"
+        android:orderInCategory="100"
+        android:title="@string/action_donate"
+        android:icon="@drawable/ic_donate"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_rate"
+        android:orderInCategory="101"
+        android:title="@string/action_rate"
+        android:icon="@drawable/ic_rate"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="102"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_settings"
+        app:showAsAction="always" />
+</menu>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/popup_bubble_layout_margin_bottom">
+    <ImageView
+        android:id="@+id/imgvSearch"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_search"
+        />
+
+    <ImageView
+        android:id="@+id/imgvTranslate"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_translate"
+        />
+
+    <ImageView
+        android:id="@+id/imgVSms"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_sms"
+        />
+
+    <ImageView
+        android:id="@+id/imgvCall"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_call"
+        />
+
+    <ImageView
+        android:id="@+id/imgvLocate"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_locate"
+        />
+
+    <ImageView
+        android:id="@+id/imgvShare"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/ic_share"
+        />
+
+    <ImageView
+        android:id="@+id/imgvLaunchBubble"
+        android:layout_width="@dimen/popup_bubble_size"
+        android:layout_height="@dimen/popup_bubble_size"
+        android:layout_margin="@dimen/popup_bubble_margin"
+        android:background="@drawable/popup_bubble_bg"
+        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        />
+
+<!--
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSearchBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        />
+-->
+</LinearLayout>

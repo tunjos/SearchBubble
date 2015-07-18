@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog bulletedList="true">
+    <changelogversion versionName="1.0.0" changeDate="Jul 20, 2015">
+        <changelogtext>Initial release.</changelogtext>
+    </changelogversion>
+
+<!--
+    <changelogversion versionName="0.9" changeDate="Jul 20, 2015">
+        <changelogtext>[b]New![/b] Add new attrs to customize header and row layout</changelogtext>
+        <changelogtext>Fixed log while parsing </changelogtext>
+        <changelogtext>Add support for html markup</changelogtext>
+        <changelogtext>Add bullet point in </changelogtext>
+        <changelogtext>Support for customized xml filename</changelogtext>
+    </changelogversion>
+-->
+</changelog>

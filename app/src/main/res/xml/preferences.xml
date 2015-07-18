@@ -1,0 +1,119 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <com.tunjos.searchbubble.others.MyPreferenceCategory
+        android:title="@string/pref_general_title_c">
+
+    <CheckBoxPreference
+        android:title="@string/pref_bubble_active_title"
+        android:summary="@string/pref_bubble_active_summary"
+        android:key="pref_bubble_active"
+        android:defaultValue="true"
+        android:widgetLayout="@layout/preference_switchcompat"/>
+        <ListPreference
+            android:key="pref_default_search"
+            android:title="@string/pref_default_search_title"
+            android:entries="@array/pref_default_search_titles_array"
+            android:entryValues="@array/pref_default_search_values_array"
+            android:defaultValue="1"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+        <CheckBoxPreference
+            android:key="pref_auto_start"
+            android:title="@string/pref_auto_start_title"
+            android:summary="@string/pref_auto_start_summary"
+            android:defaultValue="true"
+            android:dependency="pref_bubble_active"/>
+        <CheckBoxPreference
+            android:key="pref_auto_launch_bubble"
+            android:title="@string/pref_auto_launch_bubble_title"
+            android:summary="@string/pref_auto_launch_bubble_summary"
+            android:defaultValue="false"
+            android:dependency="pref_bubble_active"/>
+        <CheckBoxPreference
+            android:key="pref_auto_close"
+            android:title="@string/pref_auto_close_title"
+            android:defaultValue="true" />
+
+        <!--<MultiSelectListPreference
+            android:key="pref_bubble_size"
+            android:title="@string/pref_bubble_size_title"
+            android:entries="@array/pref_bubble_size_titles_array"
+            android:entryValues="@array/pref_bubble_size_values_array" />
+
+        <MultiSelectListPreference
+            android:key="pref_bubble_transparency"
+            android:title="@string/pref_bubble_transparency_title"
+            android:entries="@array/pref_bubble_transparency_titles_array"
+            android:entryValues="@array/pref_bubble_transparency_values_array" />-->
+
+
+        <MultiSelectListPreference
+            android:key="pref_popup_bubbles"
+            android:title="@string/pref_popup_bubbles_title"
+            android:summary="@string/pref_popup_bubbles_summary"
+            android:entries="@array/pref_popup_bubbles_titles_array"
+            android:entryValues="@array/pref_popup_bubbles_values_array"
+            android:defaultValue="@array/pref_popup_bubbles_values_array"/>
+
+</com.tunjos.searchbubble.others.MyPreferenceCategory>
+
+    <com.tunjos.searchbubble.others.MyPreferenceCategory
+        android:title="@string/pref_clipboard_title_c">
+        <CheckBoxPreference
+            android:key="pref_pin_to_notification"
+            android:title="@string/pref_pin_to_notification_title"
+            android:defaultValue="true"
+            android:dependency="pref_bubble_active"/>
+        <CheckBoxPreference
+            android:key="pref_store_searches"
+            android:title="@string/pref_store_searches_title"
+            android:defaultValue="true" />
+        <Preference
+            android:key="pref_clear_cliphistory"
+            android:title="@string/pref_clear_cliphistory_title"
+            android:defaultValue="true" />
+<!--        <MultiSelectListPreference
+            android:key="pref_excluded_app_list"
+            android:title="@string/pref_excluded_app_list_title"
+            android:defaultValue="assa"
+            android:entries="@array/pref_default_search_titles_array"
+            android:entryValues="@array/pref_default_search_values_array"
+            />-->
+    </com.tunjos.searchbubble.others.MyPreferenceCategory>
+
+
+    <com.tunjos.searchbubble.others.MyPreferenceCategory
+        android:key="pref_about"
+        android:title="@string/pref_about_title_c">
+        <Preference
+            android:key="pref_send_feedback"
+            android:title="@string/pref_send_feedback_title"
+            android:enabled="false"
+            android:summary="@string/pref_send_feedback_desc_summary"/>
+
+        <Preference
+            android:title="@string/pref_view_tutorial_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.tunjos.searchbubble"
+            android:targetClass="com.tunjos.searchbubble.activities.TutorialActivity"/>
+        </Preference>
+        <Preference
+            android:key="pref_rate_search_bubble"
+            android:title="@string/pref_rate_search_bubble_title" >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=com.tunjos.searchbubble" />
+        </Preference>
+        <Preference
+            android:title="@string/pref_open_source_title" >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://github.com/tunjos/searchbubble" />
+        </Preference>
+
+        <Preference
+            android:key="pref_change_log"
+            android:title="@string/pref_change_log_title" />
+    </com.tunjos.searchbubble.others.MyPreferenceCategory>
+
+</PreferenceScreen>

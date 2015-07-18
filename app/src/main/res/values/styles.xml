@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="AppTheme.Base" />
+    <style name="AppThemeTutorial" parent="AppTheme.Base" >
+        <item name="android:windowBackground">@color/sb_red</item>
+    </style>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/sb_red</item>
+        <item name="colorPrimaryDark">@color/sb_red_dark</item>
+        <item name="colorAccent">@color/sb_red</item>
+        <!-- You can also set colorControlNormal, colorControlActivated
+         colorControlHighlight, and colorSwitchThumbNormal. -->
+
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <!--<item name="android:alertDialogTheme">@android:style/Theme.</item>-->
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/sb_red</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:windowTitleStyle">@style/TitleDialogTextStyle</item>
+    </style>
+
+    <style name="TitleDialogTextStyle" parent="Base.DialogWindowTitle.AppCompat">
+        <item name="android:textColor">@color/sb_red</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
+</resources>

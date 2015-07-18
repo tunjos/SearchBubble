@@ -1,0 +1,9 @@
+<it.gmariotti.changelibs.library.view.ChangeLogRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chg="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:paddingTop="8dp"
+    chg:rowHeaderLayoutId="@layout/changelogrowheader_material_layout"
+    chg:rowLayoutId="@layout/changelogrow_material_layout" />

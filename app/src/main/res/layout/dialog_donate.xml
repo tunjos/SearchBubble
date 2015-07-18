@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rlMilk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+
+                <TextView
+                    android:id="@+id/tvMilk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp"
+                    tools:text="Milk" />
+
+
+                <TextView
+                    android:id="@+id/tvMilkPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/sb_red"
+                    android:textSize="18sp"
+                    tools:text="1.00 €" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rlWaterMelon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+
+                <TextView
+                    android:id="@+id/tvWaterMelon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp"
+                    tools:text="WaterMelon" />
+
+
+                <TextView
+                    android:id="@+id/tvWaterMelonPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/sb_red"
+                    android:textSize="18sp"
+                    tools:text="2.00 €" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rlPizza"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+
+                <TextView
+                    android:id="@+id/tvPizza"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp"
+                    tools:text="Pizza" />
+
+
+                <TextView
+                    android:id="@+id/tvPizzaPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/sb_red"
+                    android:textSize="18sp"
+                    tools:text="5.00 €" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlSushi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+
+                <TextView
+                    android:id="@+id/tvSushi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp"
+                    tools:text="Sushi" />
+
+
+                <TextView
+                    android:id="@+id/tvSushiPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/sb_red"
+                    android:textSize="18sp"
+                    tools:text="10.00 €" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlFryingPan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
+
+
+                <TextView
+                    android:id="@+id/tvFryingPan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="18sp"
+                    tools:text="Frying Pan" />
+
+
+                <TextView
+                    android:id="@+id/tvFryingPanPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/sb_red"
+                    android:textSize="18sp"
+                    tools:text="20.00 €" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</LinearLayout>

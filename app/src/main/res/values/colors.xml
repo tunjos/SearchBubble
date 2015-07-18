@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sb_red">#FF4545</color>
+    <color name="sb_red_dark">#FF4545</color>
+    <color name="sb_blue">#353543</color>
+
+    <color name="circle_text_bg">#35AF43</color>
+    <color name="circle_number_bg">#FD3DDE</color>
+    <color name="circle_link_bg">#FFA543</color>
+</resources>
+

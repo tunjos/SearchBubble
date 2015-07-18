@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/sb_blue">
+    <ImageView
+        android:id="@+id/imgvSearchBubble"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
+        android:background="@color/sb_red"
+        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        />
+
+    <EditText
+        android:id="@+id/edtxFilter"
+        android:layout_below="@id/toolbar"
+        android:hint="@string/tx_filter"
+        android:focusable="true"
+        android:layout_width="250dp"
+        android:inputType="text"
+        android:focusableInTouchMode="true"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/edtxFilter"
+        android:id="@+id/rvClipList"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        />
+
+
+<!--
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSearchBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        />
+-->
+</LinearLayout>
