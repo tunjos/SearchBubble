@@ -8,6 +8,9 @@
     // Strings Related to FloatingBubbleService
     <string name="tx_search">Search</string>
 
+    // Strings Related to ClipboardService
+    <string name="tx_tap_to_show_bubble">Tap to show Bubble</string>
+
     // Strings Related to MainActivity
     <string name="tx_filter">Filter</string>
     <string name="tx_undo_c">UNDO</string>

@@ -26,7 +26,7 @@ public class Clip extends RealmObject{
     }
 
     public void setText(String text) {
-        text = text;
+        this.text = text;
     }
 
     public int getType() {

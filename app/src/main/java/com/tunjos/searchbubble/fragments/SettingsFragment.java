@@ -111,6 +111,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity())
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setContentTitle(getString(R.string.app_name))
+                    .setContentText(getString(R.string.tx_tap_to_show_bubble))
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                     .setColor(getResources().getColor(R.color.sb_red))

@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
 
         checkFirstRun();
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
         layoutManager = new LinearLayoutManager(this);
         clipListAdapter = new ClipListAdapter(this);
@@ -187,6 +190,12 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         FragmentManager fm = getFragmentManager();
         ClipDialogFragment clipDialogFragment = ClipDialogFragment.newInstance(MyConstants.CLIP_DIALOG_NEW, -1, 0);
         clipDialogFragment.show(fm, "fragment_clipDialog");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clipListAdapter.notifyDataSetChanged();
     }
 
     @Override
