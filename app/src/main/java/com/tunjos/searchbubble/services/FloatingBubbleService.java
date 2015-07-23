@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -59,9 +62,11 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private RealmClipAdapter realmClipAdapter;
 
     private Realm realm;
+    private RealmResults<Clip> clips;
 
     private TextView.OnEditorActionListener onEditorActionListener;
     private View.OnKeyListener onKeyListener;
+    private TextWatcher textWatcher;
 
     public FloatingBubbleService() {
     }
@@ -99,7 +104,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
 
         setListeners();
 
-        RealmResults<Clip> clips = getAllClips();
+        clips = getAllClips();
 
         realmClipAdapter = new RealmClipAdapter(getApplicationContext(), clips, true);
         clipListAdapter.setRealmAdapter(realmClipAdapter);
@@ -122,8 +127,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
             public void onClick(View v) {
                 if (isShortClickable) {
                     Toast.makeText(FloatingBubbleService.this, "SHORTCLICK", Toast.LENGTH_SHORT).show();
-
-                    switchBubbleView();
+                    switchBubbleView(true);
                 }
             }
         });
@@ -206,6 +210,33 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 return false;
             }
         };
+
+        textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        switchBubbleView(false);
+    }
+
+    private void filter(String query) {
+        if (TextUtils.isEmpty(query)) {
+            getAllClips();
+        } else {
+            clips = realm.where(Clip.class).contains(MyConstants.FIELD_TEXT, query, false).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING);
+        }
+        realmClipAdapter.updateRealmResults(clips);
+        clipListAdapter.notifyDataSetChanged();
     }
 
     private void performSearch(String query, boolean storeInHistory) {
@@ -298,14 +329,21 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         }
     }
 
-    private void switchBubbleView(){
-        int bubbleView = (myPreferenceManager.getBubbleViewPref()+ 1) % 2;
+    private void switchBubbleView(boolean checkPreferences) {
+        int bubbleView;
+        if (checkPreferences) {
+            bubbleView = (myPreferenceManager.getBubbleViewPref() + 1) % 2;
+        } else {
+            bubbleView = myPreferenceManager.getBubbleViewPref();
+        }
+
         switch (bubbleView) {
             case MyConstants.BUBBLE_VIEW_CLIPS:
                 rvClipList.setVisibility(View.VISIBLE);
                 edtxFilter.setHint(R.string.tx_filter);
-        edtxFilter.setOnEditorActionListener(null);
-        edtxFilter.setOnKeyListener(null);
+                edtxFilter.setOnEditorActionListener(null);
+                edtxFilter.setOnKeyListener(null);
+                edtxFilter.addTextChangedListener(textWatcher);
                 break;
             case MyConstants.BUBBLE_VIEW_SEARCH:
                 rvClipList.setVisibility(View.GONE);
@@ -313,9 +351,12 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 edtxFilter.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
                 edtxFilter.setOnEditorActionListener(onEditorActionListener);
                 edtxFilter.setOnKeyListener(onKeyListener);
+                edtxFilter.removeTextChangedListener(textWatcher);
                 break;
         }
 
-        myPreferenceManager.setBubbleViewPref(bubbleView);
+        if (checkPreferences) {
+            myPreferenceManager.setBubbleViewPref(bubbleView);
+        }
     }
 }
