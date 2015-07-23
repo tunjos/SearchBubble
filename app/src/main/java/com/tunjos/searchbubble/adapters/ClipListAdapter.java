@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tunjos.searchbubble.R;
-import com.tunjos.searchbubble.activities.MainActivity;
 import com.tunjos.searchbubble.models.Clip;
 import com.tunjos.searchbubble.models.MyConstants;
 import com.tunjos.searchbubble.others.itemtouch.ItemTouchHelperAdapter;
@@ -32,7 +31,7 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
 
     public ClipListAdapter(Context context) {
         sdf = new SimpleDateFormat(MyConstants.DATE_FORMAT, Locale.getDefault());
-        onItemDismissListener = (MainActivity)context;
+//        onItemDismissListener = (MainActivity)context; //TODO Fix This
         colorSbBlue = context.getResources().getColor(R.color.sb_blue);
     }
 

@@ -55,6 +55,22 @@
             android:label="@string/app_name"
             android:theme="@style/AppThemeTutorial">
         </activity>
+
+        <activity
+            android:name=".activities.AssistActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppThemeTutorial">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+
+            <!-- Provide icon for search -->
+            <meta-data android:name="com.android.systemui.action_assist_icon"
+                android:resource="@mipmap/ic_launcher" />
+        </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="854b747f72c105dfa832ada223443a5669752cf4" />
