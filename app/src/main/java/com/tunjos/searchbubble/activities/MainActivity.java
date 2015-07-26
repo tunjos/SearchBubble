@@ -80,9 +80,10 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
 
         checkFirstRun();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
         layoutManager = new LinearLayoutManager(this);
         clipListAdapter = new ClipListAdapter(this);

@@ -34,13 +34,13 @@
         android:id="@+id/imgvType"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:scaleType="centerInside"
         android:layout_centerVertical="true"
         android:background="@drawable/circle_link_bg"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"/>
+        android:layout_marginStart="10dp"/>
     <TextView
         android:id="@+id/tvText"
         android:layout_width="wrap_content"
@@ -51,6 +51,7 @@
         android:layout_toRightOf="@id/imgvType"
         android:layout_toEndOf="@id/imgvType"
         android:text="@string/hello_long"
+        android:fontFamily="sans-serif"
         android:ellipsize="end"
         android:maxLines="2"
         android:autoLink="web"
