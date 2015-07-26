@@ -20,6 +20,7 @@
         android:focusable="true"
         android:layout_width="250dp"
         android:inputType="text"
+        android:textColorHint="@color/sb_red"
         android:focusableInTouchMode="true"
         android:layout_height="wrap_content" />
 

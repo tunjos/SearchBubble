@@ -52,7 +52,7 @@
 
     // Strings Related to RateDialogFragment
     <string name="tx_life_is_easy">Life is easy with Search Bubble</string>
-    <string name="tx_rate_5">Kindly leave a 5 star review if you love using Search Bubble</string>
+    <string name="tx_rate_5">Love using Search Bubble? Kindly leave a 5 star review. </string>
     <string name="tx_i_love_it_c">I LOVE IT</string>
     <string name="tx_later_c">LATER</string>
 
@@ -88,7 +88,7 @@
     <string name="pref_send_feedback_title">Send Feedback</string>
     <string name="pref_send_feedback_desc_summary">Send anonymous feedback to developer</string>
     <string name="pref_view_tutorial_title">View Tutorial</string>
-    <string name="pref_rate_search_bubble_title">Rate Search Bubble</string>
+    <string name="pref_leave_a_5_star_review">Leave a 5 star review</string>
     <string name="pref_open_source_title">Open Source</string>
     <string name="pref_change_log_title">Change Log</string>
 

@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     }
 
     public void showThankYouMsg() {
-        Snackbar.make(fabAddClip, R.string.tx_thank_you, Snackbar.LENGTH_LONG)
+        Snackbar.make(fabAddClip, R.string.tx_thank_you, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.tx_life_is_easy_c, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     }
 
     public void showErrorMsg() {
-        Snackbar.make(fabAddClip, R.string.tx_error, Snackbar.LENGTH_LONG)
+        Snackbar.make(fabAddClip, R.string.tx_error, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.tx_try_later_c, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

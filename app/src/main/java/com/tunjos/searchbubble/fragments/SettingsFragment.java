@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         switch (preference.getKey()) {
             case MyConstants.PREF_BUBBLE_ACTIVE:
                 boolean active = (Boolean)newValue;
-                if (active) {
+                if (!active) {
                     stopClipService();
                     stopFloatingBubbleService();
                     showPinnedNotification(false);
@@ -135,6 +135,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         getActivity().startService(clipServiceIntent);
     }
 
+    //TODO check if getacnotnull[Use Context =]
     private void startFloatingBubbleService() {
         Intent floatingBubbleServiceIntent = new Intent(getActivity().getApplicationContext(), FloatingBubbleService.class);
         getActivity().startService(floatingBubbleServiceIntent);

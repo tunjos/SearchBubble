@@ -101,7 +101,7 @@
         </Preference>
         <Preference
             android:key="pref_rate_search_bubble"
-            android:title="@string/pref_rate_search_bubble_title" >
+            android:title="@string/pref_leave_a_5_star_review" >
             <intent android:action="android.intent.action.VIEW"
                 android:data="https://play.google.com/store/apps/details?id=com.tunjos.searchbubble" />
         </Preference>

@@ -9,10 +9,10 @@ import android.content.ClipboardManager;
 import android.content.ClipboardManager.OnPrimaryClipChangedListener;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +26,7 @@ import com.tunjos.searchbubble.R;
 import com.tunjos.searchbubble.models.Clip;
 import com.tunjos.searchbubble.models.MyConstants;
 import com.tunjos.searchbubble.models.MyPreferenceManager;
+import com.tunjos.searchbubble.others.IntentUtils;
 import com.tunjos.searchbubble.others.PopupUtils;
 
 import java.util.Date;
@@ -95,29 +96,37 @@ public class ClipboardService extends Service {
     @OnClick({R.id.imgvSearch, R.id.imgvTranslate, R.id.imgVSms, R.id.imgvCall, R.id.imgvLocate, R.id.imgvShare, R.id.imgvLaunchBubble})
     public void onClickPopupBubble(View v) {
         String query = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+        if(TextUtils.isEmpty(query)){
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.imgvSearch:
-                performSearch(query);
+                PopupUtils.performSearch(this, query, myPreferenceManager.getDefaultSearchPref());
                 removePopup();
                 break;
             case R.id.imgvTranslate:
-                perFormTranslate();
+                PopupUtils.perFormTranslate(this, query);
                 removePopup();
                 break;
             case R.id.imgVSms:
+                PopupUtils.performSms(this, query);
                 removePopup();
                 break;
             case R.id.imgvCall:
-                PopupUtils.perFormCall(this, query);
+                PopupUtils.performCall(this, query);
                 removePopup();
                 break;
             case R.id.imgvLocate:
+                PopupUtils.performLocate(this, query);
                 removePopup();
                 break;
             case R.id.imgvShare:
+                PopupUtils.performShareAction(this, query);
                 removePopup();
                 break;
             case R.id.imgvLaunchBubble:
+                IntentUtils.startFloatingBubbleService(this);
                 removePopup();
                 break;
         }
@@ -288,54 +297,5 @@ public class ClipboardService extends Service {
         } else {
             viewGroup.findViewById(R.id.imgvLaunchBubble).setVisibility(View.VISIBLE);
         }
-    }
-
-    private void startFloatingBubbleService() {
-        Intent floatingBubbleServiceIntent = new Intent(getApplicationContext(), FloatingBubbleService.class);
-        startService(floatingBubbleServiceIntent);
-    }
-
-    private void performSearch(String query) {
-        if (query == null || query.equalsIgnoreCase("")) {
-            return;
-        }
-        Uri uri;
-        switch (myPreferenceManager.getDefaultSearchPref()) {
-            case MyConstants.GOOGLE_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_GOOGLE + query);
-                break;
-            case MyConstants.BAIDU_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_BAIDU + query);
-                break;
-            case MyConstants.YAHOO_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_YAHOO + query);
-                break;
-            case MyConstants.DUCKDUCKGO_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_DUCKDUCKGO + query);
-                break;
-            case MyConstants.BING_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_BING + query);
-                break;
-            case MyConstants.ASK_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_ASK + query);
-                break;
-            case MyConstants.YANDEX_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_YANDEX + query);
-                break;
-            case MyConstants.WOLFRAMALPHA_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_WOLFRAMALPHA + query);
-                break;
-            default:
-                uri = Uri.parse(MyConstants.SEARCH_URL_GOOGLE + query);
-                break;
-        }
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.startActivity(intent);
-    }
-
-    private void perFormTranslate() {
-
     }
 }

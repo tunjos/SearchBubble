@@ -54,6 +54,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:autoLink="web"
+        android:linksClickable="false"
         android:textColorLink="@color/sb_red"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"/>
