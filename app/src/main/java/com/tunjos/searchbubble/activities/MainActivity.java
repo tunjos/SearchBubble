@@ -80,10 +80,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
 
         checkFirstRun();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
         layoutManager = new LinearLayoutManager(this);
         clipListAdapter = new ClipListAdapter(this);
@@ -242,6 +239,9 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                rvClipList.scrollToPosition(0);
+                break;
             case R.id.action_donate:
                 FragmentManager fmWWWW = getFragmentManager();
                 DonateDialogFragment donateDialogFragment = new DonateDialogFragment();

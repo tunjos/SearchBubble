@@ -2,8 +2,8 @@
 <resources>
     <color name="sb_red">#FF4545</color>
     <color name="sb_red_dark">#FF4545</color>
-    <color name="sb_red_medium">#FF5F5F</color>
-    <color name="sb_red_light">#FF7878</color>
+    <color name="sb_red_medium">#E62C2C</color>
+    <color name="sb_red_light">#FF5F5F</color>
     <color name="sb_blue">#353543</color>
 
     <color name="circle_text_bg">#35AF43</color>
