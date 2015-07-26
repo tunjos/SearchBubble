@@ -9,6 +9,7 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_search"
         />
@@ -18,15 +19,17 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_translate"
-        />
+         />
 
     <ImageView
         android:id="@+id/imgVSms"
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_sms"
         />
@@ -36,6 +39,7 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_call"
         />
@@ -45,6 +49,7 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_locate"
         />
@@ -54,6 +59,7 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
         android:src="@drawable/ic_share"
         />
@@ -63,8 +69,9 @@
         android:layout_width="@dimen/popup_bubble_size"
         android:layout_height="@dimen/popup_bubble_size"
         android:layout_margin="@dimen/popup_bubble_margin"
+        android:scaleType="centerInside"
         android:background="@drawable/popup_bubble_bg"
-        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        android:src="@drawable/ic_search"
         />
 
 <!--

@@ -5,6 +5,6 @@
 
     <dimen name="fab_compat_margin">16dp</dimen>
     <dimen name="popup_bubble_size">37dp</dimen>
-    <dimen name="popup_bubble_margin">7dp</dimen>
+    <dimen name="popup_bubble_margin">5dp</dimen>
     <dimen name="popup_bubble_layout_margin_bottom">50dp</dimen>
 </resources>
