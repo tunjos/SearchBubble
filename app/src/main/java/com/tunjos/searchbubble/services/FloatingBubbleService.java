@@ -43,15 +43,16 @@ import io.realm.RealmResults;
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
 public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener {
-@Inject MyPreferenceManager myPreferenceManager;
+    @Inject MyPreferenceManager myPreferenceManager;
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams params;
     private ViewGroup viewGroup;
     private static int MOVE_TOLERANCE;
+    private static float DIM_AMOUNT  = 0.8f;
 
-    private boolean isLongClickable = true;
     private boolean isShortClickable = true;
+    private boolean isLongClickable = true;
 
     @InjectView(R.id.rvClipList) RecyclerView rvClipList;
     @InjectView(R.id.edtxFilter) EditText edtxFilter;
@@ -85,10 +86,11 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED|WindowManager.LayoutParams.FLAG_DIM_BEHIND,
                 PixelFormat.TRANSLUCENT);
-
-        //WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        params.dimAmount = DIM_AMOUNT;
+//        params.width = 500;
+//        params.height = 500;
 
         MOVE_TOLERANCE = MyUtils.convertDpToPixel(5.1f, this);
 
@@ -111,7 +113,6 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         clipListAdapter.notifyDataSetChanged();
 
         windowManager.addView(viewGroup, params);
-
     }
 
     private RealmResults<Clip> getAllClips() {
@@ -122,21 +123,10 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private void setListeners() {
         clipListAdapter.setOnItemClickListener(this);
 
-        imgvSearchBubble.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isShortClickable) {
-                    Toast.makeText(FloatingBubbleService.this, "SHORTCLICK", Toast.LENGTH_SHORT).show();
-                    switchBubbleView(true);
-                }
-            }
-        });
-
         imgvSearchBubble.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (!isLongClickable) return false;
-
                 isShortClickable = false;
                 Toast.makeText(FloatingBubbleService.this, "LONGCLICK", Toast.LENGTH_SHORT).show();
                 return true;
@@ -176,6 +166,11 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                         deltaX = (int) (event.getRawX() - initialTouchX);
                         deltaY = (int) (event.getRawY() - initialTouchY);
                         if (deltaX < MOVE_TOLERANCE && deltaY < MOVE_TOLERANCE) {
+
+                            if (isShortClickable) {
+                                //Short Click Performed
+                                switchBubbleView(true);
+                            }
                             isShortClickable = true;
                         }
                         break;
@@ -187,13 +182,24 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         onEditorActionListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    Toast.makeText(getApplicationContext(),"SEARCG", Toast.LENGTH_SHORT).show();
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    Toast.makeText(getApplicationContext(),"SEARCH BY KEYEVENT", Toast.LENGTH_SHORT).show();
                     String query =  edtxFilter.getText().toString();
                     myPreferenceManager.getBubbleViewPref();
                     performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    return true;
                 }
-                return true;
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    Toast.makeText(getApplicationContext(),"SEARCH BY NORMAL", Toast.LENGTH_SHORT).show();
+
+                    String query =  edtxFilter.getText().toString();
+                    myPreferenceManager.getBubbleViewPref();
+                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
+
+                    return true;
+                }
+                return false;
             }
         };
 
@@ -202,9 +208,15 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_SEARCH)) {
                     // Perform action on key press
-                    Toast.makeText(getApplicationContext(),"SEARCG", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"SEARCH BY ONKEYLISTENER", Toast.LENGTH_SHORT).show();
                     String query =  edtxFilter.getText().toString();
-                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
+//                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    return true;
+                }
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_BACK)) {
+                    // Perform action on key press
+                    Toast.makeText(getApplicationContext(),"BACKPRESSED", Toast.LENGTH_SHORT).show();
+                    hideAllViews();
                     return true;
                 }
                 return false;
@@ -226,6 +238,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
             }
         };
 
+        edtxFilter.setOnEditorActionListener(onEditorActionListener);
         switchBubbleView(false);
     }
 
@@ -329,6 +342,13 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         }
     }
 
+    private void hideAllViews() {
+        rvClipList.setVisibility(View.GONE);
+        edtxFilter.setVisibility(View.GONE);
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        windowManager.updateViewLayout(viewGroup, params);
+    }
+
     private void switchBubbleView(boolean checkPreferences) {
         int bubbleView;
         if (checkPreferences) {
@@ -336,27 +356,35 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         } else {
             bubbleView = myPreferenceManager.getBubbleViewPref();
         }
+        params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED|WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        params.dimAmount = DIM_AMOUNT;
+
+        edtxFilter.setVisibility(View.VISIBLE);
 
         switch (bubbleView) {
             case MyConstants.BUBBLE_VIEW_CLIPS:
                 rvClipList.setVisibility(View.VISIBLE);
                 edtxFilter.setHint(R.string.tx_filter);
-                edtxFilter.setOnEditorActionListener(null);
-                edtxFilter.setOnKeyListener(null);
                 edtxFilter.addTextChangedListener(textWatcher);
+                edtxFilter.setImeOptions(EditorInfo.IME_ACTION_NONE);
+                edtxFilter.requestFocus();
                 break;
             case MyConstants.BUBBLE_VIEW_SEARCH:
                 rvClipList.setVisibility(View.GONE);
                 edtxFilter.setHint(R.string.tx_search);
                 edtxFilter.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-                edtxFilter.setOnEditorActionListener(onEditorActionListener);
                 edtxFilter.setOnKeyListener(onKeyListener);
                 edtxFilter.removeTextChangedListener(textWatcher);
+                edtxFilter.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+                edtxFilter.requestFocus();
                 break;
         }
 
+
         if (checkPreferences) {
             myPreferenceManager.setBubbleViewPref(bubbleView);
+            //Update params to enable dimming
+            windowManager.updateViewLayout(viewGroup, params);
         }
     }
 }

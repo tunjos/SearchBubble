@@ -9,8 +9,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="15dp"
-        android:background="@color/sb_red"
-        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        android:background="@null"
+        android:src="@mipmap/ic_launcher"
         />
 
     <EditText
