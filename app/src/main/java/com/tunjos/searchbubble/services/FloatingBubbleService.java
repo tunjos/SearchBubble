@@ -3,6 +3,8 @@ package com.tunjos.searchbubble.services;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +27,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringConfig;
+import com.facebook.rebound.SpringListener;
+import com.facebook.rebound.SpringSystem;
+import com.facebook.rebound.SpringUtil;
 import com.tunjos.searchbubble.MyApplication;
 import com.tunjos.searchbubble.R;
 import com.tunjos.searchbubble.adapters.ClipListAdapter;
@@ -43,28 +53,45 @@ import io.realm.RealmResults;
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
 public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener {
-    @Inject MyPreferenceManager myPreferenceManager;
+    @Inject
+    MyPreferenceManager myPreferenceManager;
 
     private WindowManager windowManager;
-    private WindowManager.LayoutParams params;
-    private ViewGroup viewGroup;
-    private static int MOVE_TOLERANCE;
-    private static float DIM_AMOUNT  = 0.8f;
+    private WindowManager.LayoutParams llSearchBubbleParams;
+    private WindowManager.LayoutParams imgvCloseBubbleParams;
+    private ViewGroup llSearchBubble;
+    private ImageView imgvCloseBubble;
 
+    private SpringSystem springSystem;
+    private SpringConfig springConfig;
+
+    private Spring searchBubbleSpringX;
+    private Spring imgvCloseBubbleSpringY;
+    private Spring imgvCloseBubbleSpringScale;
+
+    private int MOVE_TOLERANCE, SPRING_CLAMP_THRESHOLD;
+    private float DIM_AMOUNT = 0.8f;
+    private double SPRING_TENSION = 400, SPRING_FRICTION = 40;
+    private int imgvCloseBubbleWidth;
+
+    private boolean backPressed = false;
     private boolean isShortClickable = true;
     private boolean isLongClickable = true;
 
-    @InjectView(R.id.rvClipList) RecyclerView rvClipList;
-    @InjectView(R.id.edtxFilter) EditText edtxFilter;
-    @InjectView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
+    @InjectView(R.id.rvClipList)
+    RecyclerView rvClipList;
+    @InjectView(R.id.edtxFilter)
+    EditText edtxFilter;
 
+    @InjectView(R.id.imgvSearchBubble)
+    ImageView imgvSearchBubble;
     private RecyclerView.LayoutManager layoutManager;
     private ClipListAdapter clipListAdapter;
+
     private RealmClipAdapter realmClipAdapter;
-
     private Realm realm;
-    private RealmResults<Clip> clips;
 
+    private RealmResults<Clip> clips;
     private TextView.OnEditorActionListener onEditorActionListener;
     private View.OnKeyListener onKeyListener;
     private TextWatcher textWatcher;
@@ -75,24 +102,85 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     @Override
     public void onCreate() {
         super.onCreate();
-        ((MyApplication)getApplication()).getPersistenceComponent().inject(this);
+        ((MyApplication) getApplication()).getPersistenceComponent().inject(this);
 
-        windowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
-        LayoutInflater layoutInflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-        viewGroup = (ViewGroup) layoutInflater.inflate(R.layout.floating_bubble, null, false);
-        ButterKnife.inject(this, viewGroup);
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        llSearchBubble = (ViewGroup) layoutInflater.inflate(R.layout.floating_bubble, null, false);
+        imgvCloseBubble = (ImageView) layoutInflater.inflate(R.layout.close_bubble, null, false);
+        ButterKnife.inject(this, llSearchBubble);
 
-        params = new WindowManager.LayoutParams(
+        edtxFilter.getBackground().setColorFilter(getResources().getColor(R.color.sb_red), PorterDuff.Mode.SRC_ATOP);
+
+        //Refactor to setLayour params
+        llSearchBubbleParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED|WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
+                        WindowManager.LayoutParams.FLAG_DIM_BEHIND,
                 PixelFormat.TRANSLUCENT);
-        params.dimAmount = DIM_AMOUNT;
-//        params.width = 500;
-//        params.height = 500;
+        llSearchBubbleParams.gravity = Gravity.TOP | Gravity.LEFT;
+        llSearchBubbleParams.dimAmount = DIM_AMOUNT;
+
+        imgvCloseBubbleParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT);
+
+        imgvCloseBubbleParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+        //TODO  getdisplay once
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        final int width = size.x;
+        int height = size.y;
+
+//        imgvCloseBubbleParams.x = (int) ((width -imgvCloseBubble.findViewById(R.id.imgvCloseBubble).getWidth()) / 2.4);
+//        imgvCloseBubbleParams.y = ((int) windowManager.getDefaultDisplay().getHeight()*3) / 4;
+        imgvCloseBubbleParams.y = 5000;
+        Log.d("DHEIGHT", "Y: " + windowManager.getDefaultDisplay().getHeight());
+        Log.d("DHEIGHT", "Y3/4: " + imgvCloseBubbleParams.y);
+
+//        imgvCloseBubbleParams.y = imgvCloseBubbleParams.y *2;
+
+        imgvCloseBubble.post(new Runnable() {
+            @Override
+            public void run() {
+                imgvCloseBubbleWidth = imgvCloseBubble.getWidth();
+                Toast.makeText(FloatingBubbleService.this, "imgclose.width" + imgvCloseBubble.getWidth(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Toast.makeText(FloatingBubbleService.this, "REALwidth" + imgvCloseBubbleWidth, Toast.LENGTH_SHORT).show();
+//        imgvCloseBubbleParams.x = (int) ((width - imgvCloseBubbleWidth) / 2.4);
+
+
+//        Toast.makeText(this, "imgclose.width"+imgvCloseBubble.getWidth(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "c.x"+imgvCloseBubbleParams.x, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "c.y"+imgvCloseBubbleParams.y, Toast.LENGTH_SHORT).show();
+
+        //Make Method, initSpringSystem
+        springSystem = SpringSystem.create();
+        springConfig = new SpringConfig(SPRING_TENSION, SPRING_FRICTION);
+        imgvCloseBubbleSpringY = springSystem.createSpring();
+        imgvCloseBubbleSpringY.setSpringConfig(springConfig);
+
+        imgvCloseBubbleSpringScale = springSystem.createSpring();
+        imgvCloseBubbleSpringScale.setSpringConfig(springConfig);
+
+        searchBubbleSpringX = springSystem.createSpring();
+        searchBubbleSpringX.setSpringConfig(springConfig);
+
+        imgvCloseBubble.setVisibility(View.GONE);
 
         MOVE_TOLERANCE = MyUtils.convertDpToPixel(5.1f, this);
+//        SPRING_CLAMP_THRESHOLD = MyUtils.convertDpToPixel(10.1f, this);
+        SPRING_CLAMP_THRESHOLD = 50;
 
         rvClipList.setHasFixedSize(true);
 
@@ -112,7 +200,20 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         clipListAdapter.setRealmAdapter(realmClipAdapter);
         clipListAdapter.notifyDataSetChanged();
 
-        windowManager.addView(viewGroup, params);
+        windowManager.addView(llSearchBubble, llSearchBubbleParams);
+        windowManager.addView(imgvCloseBubble, imgvCloseBubbleParams);
+
+//        imgvCloseBubbleParams.x = (int) ((width -imgvCloseBubble.getWidth()) / 2);
+//        windowManager.updateViewLayout(imgvCloseBubble, imgvCloseBubbleParams);
+
+        imgvCloseBubble.post(new Runnable() {
+            @Override
+            public void run() {
+                imgvCloseBubbleParams.x = (int) ((width - imgvCloseBubble.getWidth()) / 2);
+                windowManager.updateViewLayout(imgvCloseBubble, imgvCloseBubbleParams);
+                Toast.makeText(FloatingBubbleService.this, "imgclose.width2222" + imgvCloseBubble.getWidth(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private RealmResults<Clip> getAllClips() {
@@ -121,6 +222,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     }
 
     private void setListeners() {
+        //Modularize Methods
         clipListAdapter.setOnItemClickListener(this);
 
         imgvSearchBubble.setOnLongClickListener(new View.OnLongClickListener() {
@@ -146,18 +248,44 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isLongClickable = true;
-                        initialX = params.x;
-                        initialY = params.y;
+                        initialX = llSearchBubbleParams.x;
+                        initialY = llSearchBubbleParams.y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         deltaX = (int) (event.getRawX() - initialTouchX);
                         deltaY = (int) (event.getRawY() - initialTouchY);
-                        params.x = initialX + deltaX;
-                        params.y = initialY + deltaY;
-                        windowManager.updateViewLayout(viewGroup, params);
+                        llSearchBubbleParams.x = initialX + deltaX;
+                        llSearchBubbleParams.y = initialY + deltaY;
+                        windowManager.updateViewLayout(llSearchBubble, llSearchBubbleParams);
+
                         if (deltaX > MOVE_TOLERANCE || deltaY > MOVE_TOLERANCE) {
+                            if (backPressed) {
+                                imgvCloseBubbleSpringScale.setEndValue(1.0);
+                                imgvCloseBubbleSpringY.setEndValue(1.0);
+                                //TODO get some values once..like imgvCloseBubble.getWidth()  etc
+                                if (llSearchBubbleParams.x >= (imgvCloseBubbleParams.x - SPRING_CLAMP_THRESHOLD) &&
+                                        llSearchBubbleParams.x <= (imgvCloseBubbleParams.x + SPRING_CLAMP_THRESHOLD)
+                                        && llSearchBubbleParams.y <= ((windowManager.getDefaultDisplay().getHeight()*3/4) -(imgvCloseBubbleParams.y - SPRING_CLAMP_THRESHOLD)) &&
+                                        llSearchBubbleParams.y >= ((windowManager.getDefaultDisplay().getHeight()*3/4) -(imgvCloseBubbleParams.y + (SPRING_CLAMP_THRESHOLD)))) {
+                                    imgvCloseBubbleSpringScale.setEndValue(1.3);
+
+                                    Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
+                                    Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
+                                    Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
+                                    Log.d("CloseY", "NormalY: " + imgvCloseBubbleParams.y);
+                                    llSearchBubbleParams.x = imgvCloseBubbleParams.x - 20;
+                                    llSearchBubbleParams.y = (windowManager.getDefaultDisplay().getHeight())- imgvCloseBubbleParams.y - 20;
+//                                    isClosed = true;
+                                } else {
+//                                    isClosed = false;
+                                    imgvCloseBubbleSpringScale.setEndValue(1.0);
+                                }
+                                windowManager.updateViewLayout(llSearchBubble, llSearchBubbleParams);
+                                windowManager.updateViewLayout(imgvCloseBubble, imgvCloseBubbleParams);
+                            }
+
                             isLongClickable = false;
                             isShortClickable = false;
                         }
@@ -165,11 +293,17 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                     case MotionEvent.ACTION_UP:
                         deltaX = (int) (event.getRawX() - initialTouchX);
                         deltaY = (int) (event.getRawY() - initialTouchY);
+                        if (backPressed) {
+                            imgvCloseBubbleSpringY.setEndValue(0.0);
+                        }
                         if (deltaX < MOVE_TOLERANCE && deltaY < MOVE_TOLERANCE) {
-
                             if (isShortClickable) {
                                 //Short Click Performed
-                                switchBubbleView(true);
+                                if (backPressed) {
+                                    switchBubbleView(false);
+                                } else {
+                                    switchBubbleView(true);
+                                }
                             }
                             isShortClickable = true;
                         }
@@ -184,16 +318,16 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH && keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    Toast.makeText(getApplicationContext(),"SEARCH BY KEYEVENT", Toast.LENGTH_SHORT).show();
-                    String query =  edtxFilter.getText().toString();
+                    Toast.makeText(getApplicationContext(), "SEARCH BY KEYEVENT", Toast.LENGTH_SHORT).show();
+                    String query = edtxFilter.getText().toString();
                     myPreferenceManager.getBubbleViewPref();
                     performSearch(query, myPreferenceManager.getStoreSearchesPref());
                     return true;
                 }
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Toast.makeText(getApplicationContext(),"SEARCH BY NORMAL", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "SEARCH BY NORMAL", Toast.LENGTH_SHORT).show();
 
-                    String query =  edtxFilter.getText().toString();
+                    String query = edtxFilter.getText().toString();
                     myPreferenceManager.getBubbleViewPref();
                     performSearch(query, myPreferenceManager.getStoreSearchesPref());
 
@@ -208,14 +342,15 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_SEARCH)) {
                     // Perform action on key press
-                    Toast.makeText(getApplicationContext(),"SEARCH BY ONKEYLISTENER", Toast.LENGTH_SHORT).show();
-                    String query =  edtxFilter.getText().toString();
+                    Toast.makeText(getApplicationContext(), "SEARCH BY ONKEYLISTENER", Toast.LENGTH_SHORT).show();
+                    String query = edtxFilter.getText().toString();
 //                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
                     return true;
                 }
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_BACK)) {
                     // Perform action on key press
-                    Toast.makeText(getApplicationContext(),"BACKPRESSED", Toast.LENGTH_SHORT).show();
+                    backPressed = true;
+                    Toast.makeText(getApplicationContext(), "BACKPRESSED", Toast.LENGTH_SHORT).show();
                     hideAllViews();
                     return true;
                 }
@@ -239,6 +374,94 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         };
 
         edtxFilter.setOnEditorActionListener(onEditorActionListener);
+
+        imgvCloseBubbleSpringY.addListener(new SpringListener() {
+            @Override
+            public void onSpringUpdate(Spring spring) {
+                float value = (float) spring.getCurrentValue();
+                float clampedValue = (float) SpringUtil.clamp(value, 0.0, 1.0);
+                imgvCloseBubble.setAlpha(clampedValue);
+
+                //TODO Get this once? yea
+ /*               Point point = new Point();
+                windowManager.getDefaultDisplay().getSize(point);
+                int maxYPosition = point.y / 4;*/
+
+                int maxYPosition = windowManager.getDefaultDisplay().getHeight();
+                maxYPosition = maxYPosition /4;
+//                maxYPosition = windowManager.getDefaultDisplay().getHeight() - (imgvSearchBubble.getHeight() * 2);
+                imgvCloseBubbleParams.y = (int) (SpringUtil.mapValueFromRangeToRange(value, 0.0, 1.0, 0.0, maxYPosition));
+                Log.d("CloseY","springY: "+imgvCloseBubbleParams.y);
+                Log.d("CloseY","springY: "+imgvCloseBubbleParams.y);
+                Log.d("CloseY","springY: "+imgvCloseBubbleParams.y);
+                Log.d("CloseY","springY: "+imgvCloseBubbleParams.y);
+
+                windowManager.updateViewLayout(imgvCloseBubble, imgvCloseBubbleParams);
+            }
+
+            @Override
+            public void onSpringAtRest(Spring spring) {
+                if (spring.getCurrentValue() == 0) {
+                    imgvCloseBubble.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onSpringActivate(Spring spring) {
+                imgvCloseBubble.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onSpringEndStateChange(Spring spring) {
+            }
+        });
+
+        imgvCloseBubbleSpringScale.addListener(new SpringListener() {
+            @Override
+            public void onSpringUpdate(Spring spring) {
+                float value = (float) spring.getCurrentValue();
+                float clampedValue = (float) SpringUtil.clamp(value, 0.0, 1.0);//TODO RM
+                imgvCloseBubble.setScaleX(value);
+                imgvCloseBubble.setScaleY(value);
+                windowManager.updateViewLayout(imgvCloseBubble, imgvCloseBubbleParams);
+            }
+
+            @Override
+            public void onSpringAtRest(Spring spring) {
+
+            }
+
+            @Override
+            public void onSpringActivate(Spring spring) {
+
+            }
+
+            @Override
+            public void onSpringEndStateChange(Spring spring) {
+            }
+        });
+
+        searchBubbleSpringX.addListener(new SpringListener() {
+            @Override
+            public void onSpringUpdate(Spring spring) {
+
+            }
+
+            @Override
+            public void onSpringAtRest(Spring spring) {
+
+            }
+
+            @Override
+            public void onSpringActivate(Spring spring) {
+
+            }
+
+            @Override
+            public void onSpringEndStateChange(Spring spring) {
+            }
+        });
+
         switchBubbleView(false);
     }
 
@@ -345,8 +568,13 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private void hideAllViews() {
         rvClipList.setVisibility(View.GONE);
         edtxFilter.setVisibility(View.GONE);
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-        windowManager.updateViewLayout(viewGroup, params);
+        llSearchBubbleParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+//        llSearchBubbleParams.x = (int) llSearchBubble.getX();
+//        llSearchBubbleParams.x = (int) llSearchBubble.getY();
+
+        llSearchBubble.invalidate();
+        windowManager.updateViewLayout(llSearchBubble, llSearchBubbleParams);
+        llSearchBubble.invalidate();
     }
 
     private void switchBubbleView(boolean checkPreferences) {
@@ -356,8 +584,9 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         } else {
             bubbleView = myPreferenceManager.getBubbleViewPref();
         }
-        params.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED|WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        params.dimAmount = DIM_AMOUNT;
+
+        llSearchBubbleParams.flags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        llSearchBubbleParams.dimAmount = DIM_AMOUNT;
 
         edtxFilter.setVisibility(View.VISIBLE);
 
@@ -380,11 +609,14 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 break;
         }
 
+        if (backPressed) {
+            //Update llSearchBubbleParams to enable dimming
+            windowManager.updateViewLayout(llSearchBubble, llSearchBubbleParams);
+            backPressed = false;
+        }
 
         if (checkPreferences) {
             myPreferenceManager.setBubbleViewPref(bubbleView);
-            //Update params to enable dimming
-            windowManager.updateViewLayout(viewGroup, params);
         }
     }
 }

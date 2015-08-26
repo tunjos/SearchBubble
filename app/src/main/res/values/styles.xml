@@ -16,6 +16,7 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:textColorHint">@color/sb_red</item>
         <!--<item name="android:alertDialogTheme">@android:style/Theme.</item>-->
+
     </style>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">

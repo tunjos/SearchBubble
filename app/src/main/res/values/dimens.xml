@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="search_bubble_size">65dp</dimen>
+
     <dimen name="fab_compat_margin">16dp</dimen>
     <dimen name="popup_bubble_size">37dp</dimen>
     <dimen name="popup_bubble_margin">5dp</dimen>

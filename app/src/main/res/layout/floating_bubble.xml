@@ -2,17 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/sb_blue">
+    android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/imgvSearchBubble"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/search_bubble_size"
+        android:layout_height="@dimen/search_bubble_size"
         android:layout_margin="15dp"
         android:background="@null"
         android:src="@mipmap/ic_launcher"
         />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/sb_blue">
     <EditText
         android:id="@+id/edtxFilter"
         android:layout_below="@id/toolbar"
@@ -22,7 +26,7 @@
         android:inputType="text"
         android:textColorHint="@color/sb_red"
         android:focusableInTouchMode="true"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_below="@id/edtxFilter"
@@ -30,17 +34,5 @@
         android:layout_width="250dp"
         android:layout_height="200dp"
         />
-
-
-<!--
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabSearchBubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        />
--->
+    </LinearLayout>
 </LinearLayout>
