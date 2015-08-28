@@ -142,7 +142,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
 
 //        imgvCloseBubbleParams.x = (int) ((width -imgvCloseBubble.findViewById(R.id.imgvCloseBubble).getWidth()) / 2.4);
 //        imgvCloseBubbleParams.y = ((int) windowManager.getDefaultDisplay().getHeight()*3) / 4;
-        imgvCloseBubbleParams.y = 5000;
+        imgvCloseBubbleParams.y = 444;
         Log.d("DHEIGHT", "Y: " + windowManager.getDefaultDisplay().getHeight());
         Log.d("DHEIGHT", "Y3/4: " + imgvCloseBubbleParams.y);
 
@@ -265,18 +265,27 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                                 imgvCloseBubbleSpringScale.setEndValue(1.0);
                                 imgvCloseBubbleSpringY.setEndValue(1.0);
                                 //TODO get some values once..like imgvCloseBubble.getWidth()  etc
-                                if (llSearchBubbleParams.x >= (imgvCloseBubbleParams.x - SPRING_CLAMP_THRESHOLD) &&
+                                if (/*llSearchBubbleParams.x >= (imgvCloseBubbleParams.x - SPRING_CLAMP_THRESHOLD) &&
                                         llSearchBubbleParams.x <= (imgvCloseBubbleParams.x + SPRING_CLAMP_THRESHOLD)
-                                        && llSearchBubbleParams.y <= ((windowManager.getDefaultDisplay().getHeight()*3/4) -(imgvCloseBubbleParams.y - SPRING_CLAMP_THRESHOLD)) &&
-                                        llSearchBubbleParams.y >= ((windowManager.getDefaultDisplay().getHeight()*3/4) -(imgvCloseBubbleParams.y + (SPRING_CLAMP_THRESHOLD)))) {
+                                        &&*/ llSearchBubbleParams.y >= ((windowManager.getDefaultDisplay().getHeight()) -(444 +imgvCloseBubble.getHeight()+ SPRING_CLAMP_THRESHOLD)) &&
+                                        llSearchBubbleParams.y <= ((windowManager.getDefaultDisplay().getHeight()) -(444 /*- imgvCloseBubble.getHeight()*/- (SPRING_CLAMP_THRESHOLD)))) {
                                     imgvCloseBubbleSpringScale.setEndValue(1.3);
 
-                                    Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
+                                    Log.d("CloseY", "NormalY: " + imgvCloseBubbleParams.y);
                                     Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
                                     Log.d("CloseY","NormalY: "+imgvCloseBubbleParams.y);
                                     Log.d("CloseY", "NormalY: " + imgvCloseBubbleParams.y);
-                                    llSearchBubbleParams.x = imgvCloseBubbleParams.x - 20;
-                                    llSearchBubbleParams.y = (windowManager.getDefaultDisplay().getHeight())- imgvCloseBubbleParams.y - 20;
+                                    llSearchBubbleParams.x = imgvCloseBubbleParams.x +20;
+//                                    llSearchBubbleParams.y = (windowManager.getDefaultDisplay().getHeight())- imgvCloseBubbleParams.y - 20;
+                                    llSearchBubbleParams.y = (windowManager.getDefaultDisplay().getHeight())- 444 - imgvCloseBubble.getHeight() -50;
+
+//                                    llSearchBubbleParams.y = 0;
+
+                                    Log.d("CloseAB", "DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                                    Log.d("CloseAB", "getHeight: " + windowManager.getDefaultDisplay().getHeight());
+                                    Log.d("CloseAB", "imgvCloseBubbleParams.y: " + imgvCloseBubbleParams.y);
+                                    Log.d("CloseAB", "llSearchBubbleParams.y: " + llSearchBubbleParams.y);
+
 //                                    isClosed = true;
                                 } else {
 //                                    isClosed = false;
