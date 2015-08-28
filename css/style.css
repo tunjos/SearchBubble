@@ -1,0 +1,354 @@
+body {
+	background: #ff4545;
+	font-family: 'Oxygen', sans-serif;
+	font-weight: 400;
+	color: #353b42;
+}
+
+.wrapper {
+	width: 80%;
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+.clear {
+	clear: all;
+}
+
+header {
+	background: #ff4545;
+	color: #fff;
+	height: 100px;
+}
+
+header h1 {
+	font-weight: 700;
+	font-size: 1.8em;
+	float: left;
+	display: inline-block;
+	margin: 28px 0 0 0;
+}
+
+header form {
+	float: right;
+}
+
+header form input[type=text] {
+	background: #fff;
+	border: none;
+	color: #333;
+	font-size: 1em;
+	padding: 10px 20px;
+	margin: 30px 0;
+	font-weight: 300;
+	width: 200px;
+	height: 17px;
+}
+
+header form input[type=text]:focus {
+	outline: none;
+	color: #ff4545;
+}
+
+header form input[type=button] {
+	background: #fff;
+	border: none;
+	color: #333;
+	font-size: 1em;
+	padding: 10px 20px;
+	margin: 30px 0 30px -10px;
+	height: 37px;
+	color: #ff4545;
+	font-weight: 300;
+}
+
+header form input[type=button]:hover {
+	background: #f4f7f9;
+}
+
+#banner {
+	background: #f4f7f9;
+	height: 360px;
+}
+
+#banner .introduction {
+	float: left;
+}
+
+#banner h2 {
+	font-size: 3.6em;
+	font-weight: 300;
+	color: #ff4545;
+	padding-top: 60px;
+}
+
+#banner p {
+	font-size: 1.2em;
+	font-weight: 300;
+}
+
+#banner a.download {
+	display: block;
+	width: 160px;
+	background: #ff4545 url(../images/Google-Play-Store-alt-icon.png) no-repeat center left;
+	background-position: 20px 16px;
+	color: #fff;
+	text-decoration: none;
+	font-size: 1.5em;
+	padding: 5px 10px 15px 80px;
+	line-height: 1;
+	margin: 40px 0 0 0;
+	border-radius: 15px;
+}
+
+#banner a.download:hover {
+	background-color: #ff5858;
+}
+
+#banner a.download:active {
+	background-color: #ea3d51;
+}
+
+#banner a.download span {
+	font-size: 0.7em;
+}
+
+#banner .video {
+	float: right;
+	margin: 70px 0;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background-color: #353543;
+	-webkit-box-shadow: 0 1px 7px rgba(0,0,0,.4);
+	-moz-box-shadow: 0 1px 7px rgba(0,0,0,.4);
+	box-shadow: 0 1px 7px rgba(0,0,0,.4);
+	border: solid 3px #fff;
+	padding-bottom: -5px;
+}
+
+#banner .video img {
+	display: block;
+}
+
+#feature-section {
+	min-height: 500px;
+}
+
+#feature-section h3 {
+	color: #fff;
+	font-weight: 300;
+	font-size: 1.8em;
+	padding: 100px 0 10px 0;
+}
+
+#feature-section p{
+	margin-bottom: 20px;
+	font-size: 1.1em;
+	line-height: 1.5;
+}
+
+#feature-section .description {
+	float: left;
+	width: 50%;
+}
+
+#feature-section .image {
+	float: right;
+	width: 381px;
+	position: relative;
+	height: 500px;
+	overflow: hidden;
+}
+
+#feature-section .image img {
+	position: absolute;
+	bottom: -140px;
+}
+
+#feature-section .image img:hover {
+	position: absolute;
+	bottom: 0px;
+}
+
+#feature-section .image img {
+	-webkit-transition: all 1s ease-in-out;
+	-moz-transition: all 1s ease-in-out;
+	-o-transition: all 1s ease-in-out;
+	transition: all 1s ease-in-out;
+}
+
+.feature-left {
+	background: #ff4545;
+}
+
+.feature-right {
+	background: #f4f7f9;
+}
+
+#feature-section.feature-right .description {
+	float: right;
+}
+#feature-section.feature-right .image {
+	float: left;
+}
+
+a.wide-button {
+	background: #ff4545 url(../images/GitHub-Mark-Light-32px.png) no-repeat center right;
+	display: block;
+	color: #fff;
+	text-decoration: none;
+	padding: 20px 0;
+	width: 52%;
+	margin: 70px auto;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: 400;
+}
+
+a.wide-button:hover {
+	background: #ff5858;
+}
+
+a.wide-button:active {
+	background: #ea3d51;
+}
+
+ul#social-links {
+	width: 340px;
+	height: 48px;
+	margin: 0 auto 40px auto;
+}
+
+ul#social-links li {
+	float: left;
+	display: inline-block;
+}
+
+ul#social-links li a {
+	display: inline-block;
+	height: 48px;
+	width: 48px;
+	margin-left: 20px;
+	text-indent: -4999px;
+}
+
+ul#social-links li a.facebook {background: url(../images/social-facebook.png) no-repeat;}
+ul#social-links li a.twitter {background: url(../images/social-twitter.png) no-repeat;}
+ul#social-links li a.stumbleupon {background: url(../images/social-stumbleupon.png) no-repeat;}
+ul#social-links li a.google {background: url(../images/social-google.png) no-repeat;}
+ul#social-links li a.instagram {background: url(../images/social-instagram.png) no-repeat;}
+ul#social-links li a.github {background: url(../images/social-github.png) no-repeat;}
+
+footer .copyright {
+	display: block;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+footer .copyright strong {
+	color: #ff4545;
+}
+
+
+@media all and (max-width: 1024px){
+	#banner .video {
+		width: 200px;
+		margin-top: 120px;
+	}
+	#feature-section .description {
+		font-size: 80%;
+	}
+	#feature-section .image img {
+		-webkit-transition: none;
+		-moz-transition: none;
+		-o-transition: none;
+		transition: none;
+	}
+	#feature-section .image img {
+		bottom: 0px;
+		width: 381px;
+	}
+	#feature-section .image {
+		width: 300px;
+	}
+}
+
+@media all and (max-width: 768px){
+	header form input[type=text] {
+		width: 120px;
+	}
+	header form input[type=button] {
+		display: none;
+	}
+	#banner {
+		height: 560px;
+	}
+	#banner .video {
+		width: 380px;
+		float: left;
+		margin-top: 40px;
+	}
+	#feature-section .description, #feature-section.feature-right .description {
+		float: none;
+		width: 100%;
+	}
+	#feature-section .image, #feature-section.feature-right .image {
+		float: none;
+		width: 100%;
+	}
+	header h1 {
+		font-size: 1.6em;
+	}
+	
+}
+
+@media all and (max-width: 480px){
+	header {
+		height: 160px;
+	}
+	header h1 {
+		display: block;
+		width: 100%;
+	}
+	header form {
+		width: 100%;
+		display: block;
+		margin: -10px auto 0 auto;
+	}
+	header form input[type=text] {
+		width: 168px;
+	}
+	header form input[type=button] {
+		display: inline-block;
+	}
+	#banner h2 {
+		font-size: 2.8em;
+	}
+	#banner a.download {
+		width: 220px;
+	}
+	#banner .video {
+		width: 300px;
+	}
+	#feature-section .image {
+		margin-top: -50px;
+	}
+	
+}
+
+@media all and (max-width: 400px){
+	header form input[type=text] {
+		width: 120px;
+	}
+	header h1 {
+		font-size: 1.6em;
+	}
+	
+@media all and (max-width: 360px){
+	header form input[type=button] {
+		display: none;
+	}
+	header h1 {
+		font-size: 1.4em;
+	}
