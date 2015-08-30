@@ -1,4 +1,5 @@
 /build
+proguard-rules.pro
 
 # Fabric
 fabric.properties
