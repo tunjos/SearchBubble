@@ -34,7 +34,7 @@ public class RateDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder b =  new  AlertDialog.Builder(getActivity())
+        AlertDialog.Builder b =  new  AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                 .setTitle(R.string.tx_life_is_easy)
                 .setMessage(R.string.tx_rate_5)
                 .setPositiveButton(R.string.tx_i_love_it_c,

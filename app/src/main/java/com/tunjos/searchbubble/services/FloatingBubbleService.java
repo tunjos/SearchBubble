@@ -53,8 +53,7 @@ import io.realm.RealmResults;
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
 public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener {
-    @Inject
-    MyPreferenceManager myPreferenceManager;
+    @Inject MyPreferenceManager myPreferenceManager;
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams llSearchBubbleParams;
@@ -78,13 +77,10 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private boolean isShortClickable = true;
     private boolean isLongClickable = true;
 
-    @InjectView(R.id.rvClipList)
-    RecyclerView rvClipList;
-    @InjectView(R.id.edtxFilter)
-    EditText edtxFilter;
+    @InjectView(R.id.rvClipList) RecyclerView rvClipList;
+    @InjectView(R.id.edtxFilter) EditText edtxFilter;
 
-    @InjectView(R.id.imgvSearchBubble)
-    ImageView imgvSearchBubble;
+    @InjectView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
     private RecyclerView.LayoutManager layoutManager;
     private ClipListAdapter clipListAdapter;
 
