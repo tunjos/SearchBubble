@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     private Clip tempClip;
 
     private IabComponent iabComponent;
-    
+
     private static String TAG = "MainActivity";
 
     @Override
@@ -80,20 +80,12 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         checkFirstRun();
         initializeToolbar();
         initializeRecyclerView();
-
-        clipListAdapter = new ClipListAdapter(this);
-        rvClipList.setAdapter(clipListAdapter);
+        initializeClipListAdapter();
 
         realm = Realm.getInstance(getApplicationContext());
 
         setListeners();
-
-        if (myPreferenceManager.getBubbleActivePref()) {
-            startClipService();
-            if (myPreferenceManager.getAutoLaunchBubblePref()) {
-                startFloatingBubbleService();
-            }
-        }
+        checkAutoLaunchBubble();
 
         clips = getAllClips();
 
@@ -102,6 +94,20 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         initializeIabHelper();
 
         tempClip = new Clip();
+    }
+
+    private void initializeClipListAdapter() {
+        clipListAdapter = new ClipListAdapter(this);
+        rvClipList.setAdapter(clipListAdapter);
+    }
+
+    private void checkAutoLaunchBubble() {
+        if (myPreferenceManager.getBubbleActivePref()) {
+            startClipService();
+            if (myPreferenceManager.getAutoLaunchBubblePref()) {
+                startFloatingBubbleService();
+            }
+        }
     }
 
     private void initializeItemTouchHelper() {
