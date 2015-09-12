@@ -38,6 +38,7 @@
 
     // Strings Related to ClipDialogFragment
     <string name="tx_newclip">New Clip</string>
+    <string name="tx_editclip">Edit Clip</string>
     <string name="tx_cancel_c">CANCEL</string>
     <string name="tx_save_c">SAVE</string>
 

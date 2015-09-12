@@ -29,7 +29,8 @@ import static com.tunjos.searchbubble.others.MyUtils.getClipType;
  * Created by tunjos on 28/06/2015.
  */
 public class ClipDialogFragment extends DialogFragment {
-@InjectView(R.id.edtxClip) EditText edtxClip;
+    @InjectView(R.id.edtxClip) EditText edtxClip;
+
     public ClipDialogFragment() {
     }
 
@@ -47,8 +48,8 @@ public class ClipDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         edtxClip.requestFocus();
-        getDialog().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -73,7 +74,6 @@ public class ClipDialogFragment extends DialogFragment {
         final ClipSavedListener clipSavedListener = (ClipSavedListener)getActivity();
 
         AlertDialog.Builder b =  new  AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                .setTitle(R.string.tx_newclip)
                 .setPositiveButton(R.string.tx_save_c,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -124,6 +124,12 @@ public class ClipDialogFragment extends DialogFragment {
                             }
                         }
                 );
+        if (type == MyConstants.CLIP_DIALOG_OLD) {
+            b.setTitle(R.string.tx_editclip);
+        } else if (type == MyConstants.CLIP_DIALOG_NEW) {
+            b.setTitle(R.string.tx_newclip);
+        }
+
         b.setView(view);
         return b.create();
     }
