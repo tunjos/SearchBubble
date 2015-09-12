@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,7 +38,9 @@ import com.tunjos.searchbubble.adapters.RealmClipAdapter;
 import com.tunjos.searchbubble.models.Clip;
 import com.tunjos.searchbubble.models.MyConstants;
 import com.tunjos.searchbubble.models.MyPreferenceManager;
+import com.tunjos.searchbubble.others.IntentUtils;
 import com.tunjos.searchbubble.others.MyUtils;
+import com.tunjos.searchbubble.others.PopupUtils;
 
 import java.util.Date;
 
@@ -282,6 +283,8 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                                     Log.d("CloseAB", "imgvCloseBubbleParams.y: " + imgvCloseBubbleParams.y);
                                     Log.d("CloseAB", "llSearchBubbleParams.y: " + llSearchBubbleParams.y);
 
+
+
 //                                    isClosed = true;
                                 } else {
 //                                    isClosed = false;
@@ -312,6 +315,15 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                             }
                             isShortClickable = true;
                         }
+
+                        if (/*llSearchBubbleParams.x >= (imgvCloseBubbleParams.x - SPRING_CLAMP_THRESHOLD) &&
+                                        llSearchBubbleParams.x <= (imgvCloseBubbleParams.x + SPRING_CLAMP_THRESHOLD)
+                                        &&*/ llSearchBubbleParams.y >= ((windowManager.getDefaultDisplay().getHeight()) -(444 +imgvCloseBubble.getHeight()+ SPRING_CLAMP_THRESHOLD)) &&
+                                llSearchBubbleParams.y <= ((windowManager.getDefaultDisplay().getHeight()) -(444 /*- imgvCloseBubble.getHeight()*/- (SPRING_CLAMP_THRESHOLD)))) {
+
+                            Toast.makeText(getApplicationContext(), "CLOSE", Toast.LENGTH_SHORT).show();
+                            IntentUtils.stopFloatingBubbleService(getApplicationContext());
+                        }
                         break;
                 }
                 return false;
@@ -327,6 +339,8 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                     String query = edtxFilter.getText().toString();
                     myPreferenceManager.getBubbleViewPref();
                     performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    edtxFilter.setText("");
+
                     return true;
                 }
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -335,6 +349,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                     String query = edtxFilter.getText().toString();
                     myPreferenceManager.getBubbleViewPref();
                     performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    edtxFilter.setText("");
 
                     return true;
                 }
@@ -349,7 +364,9 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                     // Perform action on key press
                     Toast.makeText(getApplicationContext(), "SEARCH BY ONKEYLISTENER", Toast.LENGTH_SHORT).show();
                     String query = edtxFilter.getText().toString();
-//                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    performSearch(query, myPreferenceManager.getStoreSearchesPref());
+                    edtxFilter.setText("");
+
                     return true;
                 }
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_BACK)) {
@@ -484,43 +501,12 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         if (query == null || query.equalsIgnoreCase("")) {
             return;
         }
-        Uri uri;
-        switch (myPreferenceManager.getDefaultSearchPref()) {
-            case MyConstants.GOOGLE_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_GOOGLE + query);
-                break;
-            case MyConstants.BAIDU_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_BAIDU + query);
-                break;
-            case MyConstants.YAHOO_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_YAHOO + query);
-                break;
-            case MyConstants.DUCKDUCKGO_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_DUCKDUCKGO + query);
-                break;
-            case MyConstants.BING_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_BING + query);
-                break;
-            case MyConstants.ASK_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_ASK + query);
-                break;
-            case MyConstants.YANDEX_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_YANDEX + query);
-                break;
-            case MyConstants.WOLFRAMALPHA_PREF_VALUE:
-                uri = Uri.parse(MyConstants.SEARCH_URL_WOLFRAMALPHA + query);
-                break;
-            default:
-                uri = Uri.parse(MyConstants.SEARCH_URL_GOOGLE + query);
-                break;
-        }
+
+        PopupUtils.performSearch(this, query, myPreferenceManager.getDefaultSearchPref());
 
         if (storeInHistory) {
             storeSearchQuery(query);
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.startActivity(intent);
 
         if (myPreferenceManager.getAutoClosePref()) {
             stopSelf();
@@ -564,8 +550,10 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 performSearch(query, false);
                 break;
             case MyConstants.CLIPTYPE_URL:
+                performSearch(query, false);
                 break;
             case MyConstants.CLIPTYPE_NO:
+                performSearch(query, false);
                 break;
         }
     }

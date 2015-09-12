@@ -3,6 +3,7 @@ package com.tunjos.searchbubble.others;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Patterns;
 
 import com.tunjos.searchbubble.models.MyConstants;
 
@@ -45,6 +46,10 @@ public final class PopupUtils {
             default:
                 uri = Uri.parse(MyConstants.SEARCH_URL_GOOGLE + query);
                 break;
+        }
+
+        if (Patterns.WEB_URL.matcher(query.toLowerCase()).matches()) {
+            uri = Uri.parse(query);
         }
 
     Intent searchIntent = new Intent(Intent.ACTION_VIEW, uri);
