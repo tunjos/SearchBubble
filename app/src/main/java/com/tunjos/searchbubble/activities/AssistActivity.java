@@ -14,13 +14,9 @@ public class AssistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (myPreferenceManager.getBubbleActivePref()) {
-//            startClipService();
-            startFloatingBubbleService();
-//        }
+        startFloatingBubbleService();
         finish();
     }
-
 
     private void startFloatingBubbleService() {
         Intent floatingBubbleServiceIntent = new Intent(getApplicationContext(), FloatingBubbleService.class);
