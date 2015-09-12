@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.squareup.leakcanary.LeakCanary;
 import com.tunjos.searchbubble.di.components.DaggerPersistenceComponent;
 import com.tunjos.searchbubble.di.components.PersistenceComponent;
 import com.tunjos.searchbubble.di.modules.ContextModule;
@@ -22,6 +23,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LeakCanary.install(this);
 
 //        Disable Debug Crash Logging
         CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
