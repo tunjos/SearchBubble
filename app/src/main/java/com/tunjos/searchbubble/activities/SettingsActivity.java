@@ -21,13 +21,16 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.inject(this);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initializeToolbar();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
+    }
 
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
