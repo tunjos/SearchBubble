@@ -65,28 +65,23 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     private Realm realm;
     private RealmResults<Clip> clips;
     private Clip tempClip;
-    private static String TAG = "MainActivity";
+
     private IabComponent iabComponent;
+    
+    private static String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        iabComponent = DaggerIabComponent.builder()
-                .iabModule(new IabModule(MyConstants.BASE64_ENCODED_PUBLIC_KEY))
-                .persistenceComponent(((MyApplication)getApplication()).getPersistenceComponent()).build();
-        iabComponent.inject(this);
         ButterKnife.inject(this);
 
+        initializeDependencyInjector();
         checkFirstRun();
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        initializeToolbar();
+        initializeRecyclerView();
 
-        layoutManager = new LinearLayoutManager(this);
         clipListAdapter = new ClipListAdapter(this);
-
-        rvClipList.setHasFixedSize(true);
-        rvClipList.setLayoutManager(layoutManager);
         rvClipList.setAdapter(clipListAdapter);
 
         realm = Realm.getInstance(getApplicationContext());
@@ -96,25 +91,34 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         if (myPreferenceManager.getBubbleActivePref()) {
             startClipService();
             if (myPreferenceManager.getAutoLaunchBubblePref()) {
-//                startFloatingBubbleService();
+                startFloatingBubbleService();
             }
         }
 
         clips = getAllClips();
 
+        initializeItemTouchHelper();
+        initializeRealmAdapter();
+        initializeIabHelper();
+
+        tempClip = new Clip();
+    }
+
+    private void initializeItemTouchHelper() {
         ItemTouchHelper.Callback callback =
                 new SwipeItemTouchHelperCallback(clipListAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(rvClipList);
+    }
 
+    private void initializeRealmAdapter() {
         realmClipAdapter = new RealmClipAdapter(this, clips, true);
         clipListAdapter.setRealmAdapter(realmClipAdapter);
         clipListAdapter.notifyDataSetChanged();
+    }
 
-        tempClip = new Clip();
-
+    private void initializeIabHelper() {
         mHelper.enableDebugLogging(true);//TODO disable logging
-
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             @Override
             public void onIabSetupFinished(IabResult result) {
@@ -130,6 +134,24 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
                 iabUtil.retrieveData(mHelper);
             }
         });
+    }
+
+    private void initializeRecyclerView() {
+        layoutManager = new LinearLayoutManager(this);
+        rvClipList.setHasFixedSize(true);
+        rvClipList.setLayoutManager(layoutManager);
+    }
+
+    private void initializeDependencyInjector() {
+        iabComponent = DaggerIabComponent.builder()
+                .iabModule(new IabModule(MyConstants.BASE64_ENCODED_PUBLIC_KEY))
+                .persistenceComponent(((MyApplication)getApplication()).getPersistenceComponent()).build();
+        iabComponent.inject(this);
+    }
+
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
     }
 
     private void checkFirstRun() {
@@ -202,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         realm.close();
 
         if (mHelper != null) mHelper.dispose();
-        mHelper = null;
+            mHelper = null;
     }
 
     @Override
@@ -243,14 +265,14 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
                 rvClipList.scrollToPosition(0);
                 break;
             case R.id.action_donate:
-                FragmentManager fmWWWW = getFragmentManager();
+                FragmentManager fm = getFragmentManager();
                 DonateDialogFragment donateDialogFragment = new DonateDialogFragment();
-                donateDialogFragment.show(fmWWWW, "fragment_donateDialog");
+                donateDialogFragment.show(fm, "fragment_donateDialog");
             break;
             case R.id.action_rate:
-                FragmentManager fm = getFragmentManager();
+                FragmentManager fm1 = getFragmentManager();
                 RateDialogFragment rateDialogFragment = new RateDialogFragment();
-                rateDialogFragment.show(fm, "fragment_rateDialog");
+                rateDialogFragment.show(fm1, "fragment_rateDialog");
             break;
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
