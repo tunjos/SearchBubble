@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 /**
  * Created by tunjos on 22/06/2015.
@@ -29,8 +30,10 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
     private OnItemClickListener onItemClickListener;
     private OnItemDismissListener onItemDismissListener;
     private int colorSbBlue;
+    private boolean loadMiniClipList;
 
-    public ClipListAdapter(Context context) {
+    public ClipListAdapter(Context context, boolean loadMiniClipList) {
+        this.loadMiniClipList = loadMiniClipList;
         sdf = new SimpleDateFormat(MyConstants.DATE_FORMAT, Locale.getDefault());
         if (context instanceof MainActivity) {
             onItemDismissListener = (MainActivity) context;
@@ -47,7 +50,7 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
     public class ClipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ItemTouchHelperViewHolder {
         @InjectView(R.id.tvText) TextView tvText;
         @InjectView(R.id.tvDate) TextView tvDate;
-        @InjectView(R.id.imgvType) ImageView imgvType;
+        @Optional @InjectView(R.id.imgvType) ImageView imgvType;
 
         public ClipViewHolder(View view) {
             super(view);
@@ -76,7 +79,12 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clip_list, parent, false);
+        View inflatedView;
+        if (loadMiniClipList) {
+            inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clip_list_mini, parent, false);
+        } else {
+            inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clip_list, parent, false);
+        }
         ClipViewHolder viewHolder = new ClipViewHolder(inflatedView);
         return viewHolder;
     }
@@ -89,8 +97,11 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
         String date = sdf.format(clip.getCreationDate().getTime());
         clipViewHolder.tvText.setText(clip.getText());
         clipViewHolder.tvDate.setText(date);
-        clipViewHolder.imgvType.setImageResource(getImageTypeResource(clip.getType()));
-        clipViewHolder.imgvType.setBackgroundResource(getImageTypeBackground(clip.getType()));
+
+        if (!loadMiniClipList) {
+            clipViewHolder.imgvType.setImageResource(getImageTypeResource(clip.getType()));
+            clipViewHolder.imgvType.setBackgroundResource(getImageTypeBackground(clip.getType()));
+        }
     }
 
     private int getImageTypeResource(int type) {

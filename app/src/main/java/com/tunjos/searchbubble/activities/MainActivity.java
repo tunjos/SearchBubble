@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     }
 
     private void initializeClipListAdapter() {
-        clipListAdapter = new ClipListAdapter(this);
+        clipListAdapter = new ClipListAdapter(this, false);
         rvClipList.setAdapter(clipListAdapter);
     }
 

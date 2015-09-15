@@ -184,7 +184,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         layoutManager = new LinearLayoutManager(this);
         rvClipList.setLayoutManager(layoutManager);
 
-        clipListAdapter = new ClipListAdapter(this);
+        clipListAdapter = new ClipListAdapter(this, true);
         rvClipList.setAdapter(clipListAdapter);
 
         realm = Realm.getInstance(getApplicationContext());
