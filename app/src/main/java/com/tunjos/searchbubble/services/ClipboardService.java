@@ -93,7 +93,7 @@ public class ClipboardService extends Service {
         handler = new Handler();
     }
 
-    @OnClick({R.id.imgvSearch, R.id.imgvTranslate, R.id.imgVSms, R.id.imgvCall, R.id.imgvLocate, R.id.imgvShare, R.id.imgvLaunchBubble})
+    @OnClick({R.id.imgvSearch, R.id.imgvTranslate, R.id.imgvSms, R.id.imgvCall, R.id.imgvLocate, R.id.imgvShare, R.id.imgvLaunchBubble})
     public void onClickPopupBubble(View v) {
         String query = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
         if(TextUtils.isEmpty(query)){
@@ -109,7 +109,7 @@ public class ClipboardService extends Service {
                 PopupUtils.perFormTranslate(this, query);
                 removePopup();
                 break;
-            case R.id.imgVSms:
+            case R.id.imgvSms:
                 PopupUtils.performSms(this, query);
                 removePopup();
                 break;
@@ -269,9 +269,9 @@ public class ClipboardService extends Service {
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SMS_VALUE)) {
-            viewGroup.findViewById(R.id.imgVSms).setVisibility(View.GONE);
+            viewGroup.findViewById(R.id.imgvSms).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgVSms).setVisibility(View.VISIBLE);
+            viewGroup.findViewById(R.id.imgvSms).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_CALL_VALUE)) {

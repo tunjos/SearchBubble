@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,15 +50,18 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
-public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener {
+public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener, ClipListAdapter.OnItemLongClickListener, View.OnClickListener {
     @Inject MyPreferenceManager myPreferenceManager;
 
     private WindowManager windowManager;
+    private ViewGroup viewGroup;
+    private WindowManager.LayoutParams params;
     private WindowManager.LayoutParams llSearchBubbleParams;
     private WindowManager.LayoutParams imgvCloseBubbleParams;
     private ViewGroup llSearchBubble;
@@ -78,10 +83,10 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private boolean isShortClickable = true;
     private boolean isLongClickable = true;
 
-    @InjectView(R.id.rvClipList) RecyclerView rvClipList;
-    @InjectView(R.id.edtxFilter) EditText edtxFilter;
+    @Optional @InjectView(R.id.rvClipList) RecyclerView rvClipList;
+    @Optional @InjectView(R.id.edtxFilter) EditText edtxFilter;
 
-    @InjectView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
+    @Optional @InjectView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
     private RecyclerView.LayoutManager layoutManager;
     private ClipListAdapter clipListAdapter;
 
@@ -92,6 +97,11 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private TextView.OnEditorActionListener onEditorActionListener;
     private View.OnKeyListener onKeyListener;
     private TextWatcher textWatcher;
+
+    private Handler handler;
+    private static int POPUP_BUBBLE_DELAY = 5000;
+
+    private String query;
 
     public FloatingBubbleService() {
     }
@@ -105,7 +115,22 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         llSearchBubble = (ViewGroup) layoutInflater.inflate(R.layout.floating_bubble, null, false);
         imgvCloseBubble = (ImageView) layoutInflater.inflate(R.layout.close_bubble, null, false);
+        viewGroup = (ViewGroup) layoutInflater.inflate(R.layout.floating_popup, null, false);
+
+
         ButterKnife.inject(this, llSearchBubble);
+//        ButterKnife.inject(this, viewGroup);
+
+
+        params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                PixelFormat.TRANSLUCENT);
+        params.gravity = Gravity.BOTTOM;
+        params.y = 100; //TODO set DIP version
+
 
         edtxFilter.getBackground().setColorFilter(getResources().getColor(R.color.sb_red), PorterDuff.Mode.SRC_ATOP);
 
@@ -132,10 +157,18 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         imgvCloseBubbleParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
         //TODO  getdisplay once
         Display display = windowManager.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        final int width = size.x;
-        int height = size.y;
+        final int width;
+        final int height;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Point size = new Point();
+            display.getSize(size);
+            width = size.x;
+            height = size.y;
+        } else {
+            width = display.getWidth();
+            height = display.getHeight();
+        }
 
 //        imgvCloseBubbleParams.x = (int) ((width -imgvCloseBubble.findViewById(R.id.imgvCloseBubble).getWidth()) / 2.4);
 //        imgvCloseBubbleParams.y = ((int) windowManager.getDefaultDisplay().getHeight()*3) / 4;
@@ -211,6 +244,8 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 Toast.makeText(FloatingBubbleService.this, "imgclose.width2222" + imgvCloseBubble.getWidth(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        handler = new Handler();
     }
 
     private RealmResults<Clip> getAllClips() {
@@ -221,6 +256,15 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private void setListeners() {
         //Modularize Methods
         clipListAdapter.setOnItemClickListener(this);
+        clipListAdapter.setOnItemLongClickListener(this);
+
+        viewGroup.findViewById(R.id.imgvSearch).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvTranslate).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvSms).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvCall).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvLocate).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvShare).setOnClickListener(this);
+        viewGroup.findViewById(R.id.imgvLaunchBubble).setOnClickListener(this);
 
         imgvSearchBubble.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -228,6 +272,14 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 if (!isLongClickable) return false;
                 isShortClickable = false;
                 Toast.makeText(FloatingBubbleService.this, "LONGCLICK", Toast.LENGTH_SHORT).show();
+                query =  realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING).first().getText();
+                showPopup();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        removePopup();
+                    }
+                }, POPUP_BUBBLE_DELAY);
                 return true;
             }
         });
@@ -558,6 +610,18 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         }
     }
 
+    @Override
+    public void onItemLongClick(View view, int position) {
+        query = clipListAdapter.getItem(position).getText();
+        showPopup();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removePopup();
+            }
+        }, POPUP_BUBBLE_DELAY);
+    }
+
     private void hideAllViews() {
         rvClipList.setVisibility(View.GONE);
         edtxFilter.setVisibility(View.GONE);
@@ -610,6 +674,71 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
 
         if (checkPreferences) {
             myPreferenceManager.setBubbleViewPref(bubbleView);
+        }
+    }
+
+    private void showPopup() {
+        Log.d("SB", "showpopup"); //REMOVE THIS CODES
+        viewGroup.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                removePopup();
+                return false;
+            }
+        });
+        if (windowManager != null) {
+            try {
+                windowManager.addView(viewGroup, params);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private synchronized void removePopup() {
+        if (windowManager != null) {
+            try {
+                windowManager.removeView(viewGroup);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+//      onClickPopupBubble
+        if (TextUtils.isEmpty(query)){
+            return;
+        }
+
+        switch (v.getId()) {
+            case R.id.imgvSearch:
+                PopupUtils.performSearch(this, query, myPreferenceManager.getDefaultSearchPref());
+                removePopup();
+                break;
+            case R.id.imgvTranslate:
+                PopupUtils.perFormTranslate(this, query);
+                removePopup();
+                break;
+            case R.id.imgvSms:
+                PopupUtils.performSms(this, query);
+                removePopup();
+                break;
+            case R.id.imgvCall:
+                PopupUtils.performCall(this, query);
+                removePopup();
+                break;
+            case R.id.imgvLocate:
+                PopupUtils.performLocate(this, query);
+                removePopup();
+                break;
+            case R.id.imgvShare:
+                PopupUtils.performShareAction(this, query);
+                removePopup();
+                break;
+            case R.id.imgvLaunchBubble:
+                IntentUtils.startFloatingBubbleService(this);
+                removePopup();
+                break;
         }
     }
 }

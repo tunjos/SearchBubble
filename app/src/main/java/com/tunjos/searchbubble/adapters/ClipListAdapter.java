@@ -28,6 +28,7 @@ import butterknife.Optional;
 public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements ItemTouchHelperAdapter {
     private final SimpleDateFormat sdf;
     private OnItemClickListener onItemClickListener;
+    private OnItemLongClickListener onItemLongClickListener;
     private OnItemDismissListener onItemDismissListener;
     private int colorSbBlue;
     private boolean loadMiniClipList;
@@ -47,7 +48,7 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
         notifyItemRemoved(position);
     }
 
-    public class ClipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ItemTouchHelperViewHolder {
+    public class ClipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
         @InjectView(R.id.tvText) TextView tvText;
         @InjectView(R.id.tvDate) TextView tvDate;
         @Optional @InjectView(R.id.imgvType) ImageView imgvType;
@@ -55,6 +56,7 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
         public ClipViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
             ButterKnife.inject(this, view);
         }
 
@@ -63,6 +65,15 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(v, getAdapterPosition());
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (onItemLongClickListener != null) {
+                onItemLongClickListener.onItemLongClick(v,getAdapterPosition());
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -75,7 +86,6 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
 //            ((CardView)itemView).setCardBackgroundColor(colorSbBlue);
         }
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -145,6 +155,15 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
     public void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
+    public void setOnItemLongClickListener(final OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
 
     public interface OnItemDismissListener {
         void onItemDismiss(int position);
