@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ import com.tunjos.searchbubble.others.MyUtils;
 import com.tunjos.searchbubble.others.PopupUtils;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -60,8 +62,8 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     @Inject MyPreferenceManager myPreferenceManager;
 
     private WindowManager windowManager;
-    private ViewGroup viewGroup;
-    private WindowManager.LayoutParams params;
+    private LinearLayout llPopupBubbles;
+    private WindowManager.LayoutParams llPopupBubblesParams;
     private WindowManager.LayoutParams llSearchBubbleParams;
     private WindowManager.LayoutParams imgvCloseBubbleParams;
     private ViewGroup llSearchBubble;
@@ -115,26 +117,26 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         llSearchBubble = (ViewGroup) layoutInflater.inflate(R.layout.floating_bubble, null, false);
         imgvCloseBubble = (ImageView) layoutInflater.inflate(R.layout.close_bubble, null, false);
-        viewGroup = (ViewGroup) layoutInflater.inflate(R.layout.floating_popup, null, false);
+        llPopupBubbles = (LinearLayout) layoutInflater.inflate(R.layout.floating_popup, null, false);
 
 
         ButterKnife.inject(this, llSearchBubble);
-//        ButterKnife.inject(this, viewGroup);
+//        ButterKnife.inject(this, llPopupBubbles);
 
 
-        params = new WindowManager.LayoutParams(
+        llPopupBubblesParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 PixelFormat.TRANSLUCENT);
-        params.gravity = Gravity.BOTTOM;
-        params.y = 100; //TODO set DIP version
+        llPopupBubblesParams.gravity = Gravity.BOTTOM;
+        llPopupBubblesParams.y = 100; //TODO set DIP version
 
 
         edtxFilter.getBackground().setColorFilter(getResources().getColor(R.color.sb_red), PorterDuff.Mode.SRC_ATOP);
 
-        //Refactor to setLayour params
+        //Refactor to setLayour llPopupBubblesParams
         llSearchBubbleParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -258,13 +260,22 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         clipListAdapter.setOnItemClickListener(this);
         clipListAdapter.setOnItemLongClickListener(this);
 
-        viewGroup.findViewById(R.id.imgvSearch).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvTranslate).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvSms).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvCall).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvLocate).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvShare).setOnClickListener(this);
-        viewGroup.findViewById(R.id.imgvLaunchBubble).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvSearch).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvTranslate).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvSms).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvCall).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvLocate).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvShare).setOnClickListener(this);
+        llPopupBubbles.findViewById(R.id.imgvLaunchBubble).setOnClickListener(this);
+
+        llPopupBubbles.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                removePopup();
+                return false;
+            }
+        });
+
 
         imgvSearchBubble.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -273,6 +284,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 isShortClickable = false;
                 Toast.makeText(FloatingBubbleService.this, "LONGCLICK", Toast.LENGTH_SHORT).show();
                 query =  realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING).first().getText();
+                validatePopupBubbles();
                 showPopup();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -597,6 +609,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     public void onItemClick(View view, int position) {
         String query = clipListAdapter.getItem(position).getText();
         int clipType = clipListAdapter.getItem(position).getType();
+
         switch (clipType) {
             case MyConstants.CLIPTYPE_TEXT:
                 performSearch(query, false);
@@ -613,6 +626,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     @Override
     public void onItemLongClick(View view, int position) {
         query = clipListAdapter.getItem(position).getText();
+        validatePopupBubbles();
         showPopup();
         handler.postDelayed(new Runnable() {
             @Override
@@ -678,17 +692,9 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     }
 
     private void showPopup() {
-        Log.d("SB", "showpopup"); //REMOVE THIS CODES
-        viewGroup.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                removePopup();
-                return false;
-            }
-        });
         if (windowManager != null) {
             try {
-                windowManager.addView(viewGroup, params);
+                windowManager.addView(llPopupBubbles, llPopupBubblesParams);
             } catch (Exception e) {
             }
         }
@@ -697,7 +703,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private synchronized void removePopup() {
         if (windowManager != null) {
             try {
-                windowManager.removeView(viewGroup);
+                windowManager.removeView(llPopupBubbles);
             } catch (Exception e) {
             }
         }
@@ -706,7 +712,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     @Override
     public void onClick(View v) {
 //      onClickPopupBubble
-        if (TextUtils.isEmpty(query)){
+        if (TextUtils.isEmpty(query)) {
             return;
         }
 
@@ -739,6 +745,52 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 IntentUtils.startFloatingBubbleService(this);
                 removePopup();
                 break;
+        }
+    }
+
+    private void validatePopupBubbles() {
+        Set<String> popupSearchPref = myPreferenceManager.getPopupSearchPref();
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SEARCH_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvSearch).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvSearch).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_TRANSLATE_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvTranslate).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvTranslate).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SMS_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvSms).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvSms).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_CALL_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvCall).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvCall).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_LOCATE_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvLocate).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvLocate).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SHARE_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvShare).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvShare).setVisibility(View.VISIBLE);
+        }
+
+        if (!popupSearchPref.contains(MyConstants.PREF_POPUP_LAUNCHBUBBLE_VALUE)) {
+            llPopupBubbles.findViewById(R.id.imgvLaunchBubble).setVisibility(View.GONE);
+        } else {
+            llPopupBubbles.findViewById(R.id.imgvLaunchBubble).setVisibility(View.VISIBLE);
         }
     }
 }

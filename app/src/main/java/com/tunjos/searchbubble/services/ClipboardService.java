@@ -13,13 +13,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.tunjos.searchbubble.MyApplication;
 import com.tunjos.searchbubble.R;
@@ -27,6 +26,7 @@ import com.tunjos.searchbubble.models.Clip;
 import com.tunjos.searchbubble.models.MyConstants;
 import com.tunjos.searchbubble.models.MyPreferenceManager;
 import com.tunjos.searchbubble.others.IntentUtils;
+import com.tunjos.searchbubble.others.MyUtils;
 import com.tunjos.searchbubble.others.PopupUtils;
 
 import java.util.Date;
@@ -45,8 +45,8 @@ import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 public class ClipboardService extends Service {
     @Inject MyPreferenceManager myPreferenceManager;
     private WindowManager windowManager;
-    private WindowManager.LayoutParams params;
-    private ViewGroup viewGroup;
+    private WindowManager.LayoutParams llPopupBubblesParams;
+    private LinearLayout llPopupBubbles;
 
     private ClipboardManager clipboardManager;
     private OnPrimaryClipChangedListener onPrimaryClipChangedListener;
@@ -68,22 +68,15 @@ public class ClipboardService extends Service {
         windowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
         LayoutInflater layoutInflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        viewGroup = (ViewGroup) layoutInflater.inflate(R.layout.floating_popup, null, false);
-        ButterKnife.inject(this, viewGroup);
-
-        params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        params.gravity = Gravity.BOTTOM;
-        params.y = 100; //TODO set DIP version
-
+        llPopupBubbles = (LinearLayout) layoutInflater.inflate(R.layout.floating_popup, null, false);
+        ButterKnife.inject(this, llPopupBubbles);
 
         threadPool = Executors.newSingleThreadExecutor();
+
+        setllPopupBubblesParams();
         getClipBoardService();
         getNotificationService();
+        setListeners();
         setClipChangedListener();
 
         if (myPreferenceManager.getPinToNotificationPref()) {
@@ -93,10 +86,31 @@ public class ClipboardService extends Service {
         handler = new Handler();
     }
 
+    private void setllPopupBubblesParams() {
+        llPopupBubblesParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                PixelFormat.TRANSLUCENT);
+        llPopupBubblesParams.gravity = Gravity.BOTTOM;
+        llPopupBubblesParams.y = MyUtils.convertDpToPixel(33.3f, this);
+    }
+
+    private void setListeners() {
+        llPopupBubbles.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                removePopup();
+                return false;
+            }
+        });
+    }
+
     @OnClick({R.id.imgvSearch, R.id.imgvTranslate, R.id.imgvSms, R.id.imgvCall, R.id.imgvLocate, R.id.imgvShare, R.id.imgvLaunchBubble})
     public void onClickPopupBubble(View v) {
         String query = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
-        if(TextUtils.isEmpty(query)){
+        if (TextUtils.isEmpty(query)) {
             return;
         }
 
@@ -133,17 +147,9 @@ public class ClipboardService extends Service {
     }
 
     private void showPopup() {
-        Log.d("SB", "showpopup"); //REMOVE THIS CODES
-        viewGroup.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                removePopup();
-                return false;
-            }
-        });
         if (windowManager != null) {
             try {
-                windowManager.addView(viewGroup, params);
+                windowManager.addView(llPopupBubbles, llPopupBubblesParams);
             } catch (Exception e) {
             }
         }
@@ -152,12 +158,11 @@ public class ClipboardService extends Service {
     private synchronized void removePopup() {
         if (windowManager != null) {
             try {
-                windowManager.removeView(viewGroup);
+                windowManager.removeView(llPopupBubbles);
             } catch (Exception e) {
             }
         }
     }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -208,7 +213,7 @@ public class ClipboardService extends Service {
                 .setOngoing(true)
                 .setAutoCancel(false);
 
-            Notification notification = builder.build();
+        Notification notification = builder.build();
         notificationManager.notify(1, notification);
     }
 
@@ -254,48 +259,48 @@ public class ClipboardService extends Service {
     }
 
     private void validatePopupBubbles() {
-        Set<String> popupSearchPref= myPreferenceManager.getPopupSearchPref();
+        Set<String> popupSearchPref = myPreferenceManager.getPopupSearchPref();
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SEARCH_VALUE)) {
-            viewGroup.findViewById(R.id.imgvSearch).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvSearch).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvSearch).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvSearch).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_TRANSLATE_VALUE)) {
-            viewGroup.findViewById(R.id.imgvTranslate).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvTranslate).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvTranslate).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvTranslate).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SMS_VALUE)) {
-            viewGroup.findViewById(R.id.imgvSms).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvSms).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvSms).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvSms).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_CALL_VALUE)) {
-            viewGroup.findViewById(R.id.imgvCall).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvCall).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvCall).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvCall).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_LOCATE_VALUE)) {
-            viewGroup.findViewById(R.id.imgvLocate).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvLocate).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvLocate).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvLocate).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_SHARE_VALUE)) {
-            viewGroup.findViewById(R.id.imgvShare).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvShare).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvShare).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvShare).setVisibility(View.VISIBLE);
         }
 
         if (!popupSearchPref.contains(MyConstants.PREF_POPUP_LAUNCHBUBBLE_VALUE)) {
-            viewGroup.findViewById(R.id.imgvLaunchBubble).setVisibility(View.GONE);
+            llPopupBubbles.findViewById(R.id.imgvLaunchBubble).setVisibility(View.GONE);
         } else {
-            viewGroup.findViewById(R.id.imgvLaunchBubble).setVisibility(View.VISIBLE);
+            llPopupBubbles.findViewById(R.id.imgvLaunchBubble).setVisibility(View.VISIBLE);
         }
     }
 }
