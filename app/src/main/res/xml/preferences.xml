@@ -112,6 +112,10 @@
         </Preference>
 
         <Preference
+            android:key="pref_libraries_used"
+            android:title="@string/pref_libraries_used" />
+
+        <Preference
             android:key="pref_change_log"
             android:title="@string/pref_change_log_title" />
     </com.tunjos.searchbubble.others.MyPreferenceCategory>

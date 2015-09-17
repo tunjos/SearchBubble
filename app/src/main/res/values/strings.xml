@@ -34,7 +34,7 @@
     <string name="tx_slide_description_4">Search using your Clipboard history with a Single Click</string>
 
     <string name="tx_slide_title_5">Popup Bubbles</string>
-    <string name="tx_slide_description_5">Allows your to instantly Search, Translate, Call, Share etc the currently copied Clipboard data</string>
+    <string name="tx_slide_description_5">Allows you to instantly Search, Translate, Call, Share etc the currently copied Clipboard data</string>
 
     // Strings Related to ClipDialogFragment
     <string name="tx_newclip">New Clip</string>
@@ -59,7 +59,23 @@
 
     // Strings Related to DonateDialogFragment
     <string name="tx_kindness_brings_happiness">Kindness brings happiness</string>
-    <string name="tx_donate_and_help">Donate and help a fellow bruva</string>
+    <string name="tx_donate_and_help">Kindly donate and help</string>
+
+    // Strings Related to LibrariesUsedDialogFragment
+    <string name="tx_libraries_used">Libraries Used</string>
+    <string name="tx_libraries_used_desc">Search bubble makes use of the following open source libraries %1$s</string>
+    <string name="tx_libraries_used_urls" translatable="false"><![CDATA[
+        <a href="https://realm.io/">Realm</a>,
+        <a href="http://google.github.io/dagger/">Dagger 2</a>,
+        <a href="http://jakewharton.github.io/butterknife/">Butter Knife</a>,
+        <a href="https://github.com/PaoloRotolo/AppIntro">AppIntro</a>,
+        <a href="https://github.com/gabrielemariotti/changeloglib">ChangeLog Library</a>,
+        <a href="https://get.fabric.io/crashlytics">Crashlytic</a>,
+        <a href="https://facebook.github.io/rebound/">Rebound</a>,
+        <a href="https://github.com/square/leakcanary">LeakCanary</a>,
+        <a href="http://developer.android.com/tools/support-library/index.html">Android Support Library</a>
+    ]]></string>
+    <string name="tx_cool_c">COOL</string>
 
     <string name="action_donate">Donate</string>
     <string name="action_rate">Rate</string>
@@ -91,6 +107,7 @@
     <string name="pref_view_tutorial_title">View Tutorial</string>
     <string name="pref_leave_a_5_star_review">Leave a 5 star review</string>
     <string name="pref_open_source_title">Open Source</string>
+    <string name="pref_libraries_used">Libraries Used</string>
     <string name="pref_change_log_title">Change Log</string>
 
 

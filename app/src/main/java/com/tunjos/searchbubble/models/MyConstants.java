@@ -42,6 +42,7 @@ public class MyConstants {
 
     public static final String PREF_SEND_FEEDBACK = "pref_send_feedback";
     public static final String PREF_CHANGE_LOG = "pref_change_log";
+    public static final String PREF_LIBRARIES_USED = "pref_libraries_used";
     public static final String PREF_BUBBLE_VIEW = "pref_bubble_view";
     public static final String PREF_ABOUT = "pref_about";
     public static final String PREF_RATE_SEARCH_BUBBLE = "pref_rate_search_bubble";

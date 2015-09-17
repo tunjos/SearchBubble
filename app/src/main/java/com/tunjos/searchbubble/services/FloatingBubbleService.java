@@ -119,44 +119,14 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         imgvCloseBubble = (ImageView) layoutInflater.inflate(R.layout.close_bubble, null, false);
         llPopupBubbles = (LinearLayout) layoutInflater.inflate(R.layout.floating_popup, null, false);
 
-
         ButterKnife.inject(this, llSearchBubble);
-//        ButterKnife.inject(this, llPopupBubbles);
-
-
-        llPopupBubblesParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT);
-        llPopupBubblesParams.gravity = Gravity.BOTTOM;
-        llPopupBubblesParams.y = 100; //TODO set DIP version
-
 
         edtxFilter.getBackground().setColorFilter(getResources().getColor(R.color.sb_red), PorterDuff.Mode.SRC_ATOP);
 
-        //Refactor to setLayour llPopupBubblesParams
-        llSearchBubbleParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
-                        WindowManager.LayoutParams.FLAG_DIM_BEHIND,
-                PixelFormat.TRANSLUCENT);
-        llSearchBubbleParams.gravity = Gravity.TOP | Gravity.LEFT;
-        llSearchBubbleParams.dimAmount = DIM_AMOUNT;
+        setllPopupBubblesParams();
+        setllSearchBubbleParams();
+        setimgvCloseBubbleParams();
 
-        imgvCloseBubbleParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
-                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                PixelFormat.TRANSLUCENT);
-
-        imgvCloseBubbleParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
         //TODO  getdisplay once
         Display display = windowManager.getDefaultDisplay();
         final int width;
@@ -248,6 +218,41 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         });
 
         handler = new Handler();
+    }
+
+    private void setimgvCloseBubbleParams() {
+        imgvCloseBubbleParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.TRANSLUCENT);
+        imgvCloseBubbleParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+    }
+
+    private void setllSearchBubbleParams() {
+        llSearchBubbleParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
+                        WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+                PixelFormat.TRANSLUCENT);
+        llSearchBubbleParams.gravity = Gravity.TOP | Gravity.LEFT;
+        llSearchBubbleParams.dimAmount = DIM_AMOUNT;
+    }
+
+    private void setllPopupBubblesParams() {
+        llPopupBubblesParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                PixelFormat.TRANSLUCENT);
+        llPopupBubblesParams.gravity = Gravity.BOTTOM;
+        llPopupBubblesParams.y = MyUtils.convertDpToPixel(33.3f, this);
     }
 
     private RealmResults<Clip> getAllClips() {

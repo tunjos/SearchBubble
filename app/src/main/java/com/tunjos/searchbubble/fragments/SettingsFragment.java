@@ -56,6 +56,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         findPreference(MyConstants.PREF_CLEAR_CLIPHISTORY).setOnPreferenceClickListener(this);
         findPreference(MyConstants.PREF_SEND_FEEDBACK).setOnPreferenceClickListener(this);
+        findPreference(MyConstants.PREF_LIBRARIES_USED).setOnPreferenceClickListener(this);
         findPreference(MyConstants.PREF_CHANGE_LOG).setOnPreferenceClickListener(this);
     }
 
@@ -69,10 +70,15 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 return true;
             case MyConstants.PREF_SEND_FEEDBACK:
                 return true;
-            case MyConstants.PREF_CHANGE_LOG:
+            case MyConstants.PREF_LIBRARIES_USED:
                 FragmentManager fm1 = getFragmentManager();
+                LibrariesUsedDialogFragment librariesUsedDialogFragment = new LibrariesUsedDialogFragment();
+                librariesUsedDialogFragment.show(fm1, "fragment_librariesUsedDialog");
+                return true;
+            case MyConstants.PREF_CHANGE_LOG:
+                FragmentManager fm2 = getFragmentManager();
                 ChangeLogDialogFragment changeLogDialogFragment = new ChangeLogDialogFragment();
-                changeLogDialogFragment.show(fm1, "fragment_changelogDialog");
+                changeLogDialogFragment.show(fm2, "fragment_changelogDialog");
                 return true;
         }
         return false;
