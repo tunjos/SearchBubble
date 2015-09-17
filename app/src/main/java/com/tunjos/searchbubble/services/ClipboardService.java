@@ -200,7 +200,7 @@ public class ClipboardService extends Service {
     private void showPinnedNotification() {
         Intent floatingBubbleIntent = new Intent(this, FloatingBubbleService.class);
         PendingIntent pendingFloatingBubbleIntent =
-                PendingIntent.getService(this, 100, floatingBubbleIntent, PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.getService(this, 100, floatingBubbleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
