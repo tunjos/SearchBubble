@@ -12,6 +12,7 @@ public class Clip extends RealmObject{
     private String text;
     private int type;
     private Date creationDate;
+    private boolean favourite;
 
     public int getId() {
         return id;
@@ -43,5 +44,13 @@ public class Clip extends RealmObject{
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
     }
 }

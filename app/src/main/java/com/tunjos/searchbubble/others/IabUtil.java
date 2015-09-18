@@ -29,12 +29,12 @@ public class IabUtil {
     String p5="20.00€";
 
     public IabUtil() {
-        items = new HashMap<String, DonateItem>();
-        items.put(MyConstants.SKU_MILK, new DonateItem(MyConstants.SKU_MILK, R.string.hello_world, p1));
-        items.put(MyConstants.SKU_WATERMELON, new DonateItem(MyConstants.SKU_WATERMELON, R.string.hello_world, p2));
-        items.put(MyConstants.SKU_PIZZA, new DonateItem(MyConstants.SKU_PIZZA, R.string.hello_world, p3));
-        items.put(MyConstants.SKU_SUSHI, new DonateItem(MyConstants.SKU_SUSHI, R.string.hello_world, p4));
-        items.put(MyConstants.SKU_FRYINGPAN, new DonateItem(MyConstants.SKU_FRYINGPAN, R.string.hello_world, p5));
+        items = new HashMap<>();
+        items.put(MyConstants.SKU_MILK, new DonateItem(MyConstants.SKU_MILK, R.string.tx_donate_milk, p1));
+        items.put(MyConstants.SKU_WATERMELON, new DonateItem(MyConstants.SKU_WATERMELON, R.string.tx_donate_watermelon, p2));
+        items.put(MyConstants.SKU_PIZZA, new DonateItem(MyConstants.SKU_PIZZA, R.string.tx_donate_pizza, p3));
+        items.put(MyConstants.SKU_SUSHI, new DonateItem(MyConstants.SKU_SUSHI, R.string.tx_donate_sushi, p4));
+        items.put(MyConstants.SKU_FRYINGPAN, new DonateItem(MyConstants.SKU_FRYINGPAN, R.string.tx_donate_fryingpan, p5));
     }
 
 

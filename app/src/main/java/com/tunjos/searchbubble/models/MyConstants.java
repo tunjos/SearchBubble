@@ -19,9 +19,6 @@ public class MyConstants {
     public static final String EXTRA_CLIP_ID = "CLIP_ID";
     public static final String EXTRA_ADAPTER_POSITION = "ADAPTER_POSITION";
 
-    public static final String EXTRA_SLIDE_LAYOUT_ID = "SLIDE_LAYOUT_ID";
-
-
     public static final String DATE_FORMAT = "EE MMM HH:mm";
 
 

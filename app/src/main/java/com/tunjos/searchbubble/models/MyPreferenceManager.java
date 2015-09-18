@@ -38,7 +38,7 @@ public class MyPreferenceManager {
     }*/
 
     public boolean getAutoLaunchBubblePref() {
-        return preferences.getBoolean(MyConstants.PREF_AUTO_LAUNCH_BUBBLE, true);
+        return preferences.getBoolean(MyConstants.PREF_AUTO_LAUNCH_BUBBLE, false);
     }
 
     public void setAutoLaunchBubblePref(boolean autolaunch) {

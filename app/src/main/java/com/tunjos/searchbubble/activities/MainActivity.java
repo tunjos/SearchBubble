@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     }
 
     private void initializeIabHelper() {
-        mHelper.enableDebugLogging(true);//TODO disable logging
+        mHelper.enableDebugLogging(false);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             @Override
             public void onIabSetupFinished(IabResult result) {
