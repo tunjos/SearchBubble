@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:background="@color/sb_blue"
             android:hint="@string/tx_filter"
+            android:paddingLeft="10dp"
             android:inputType="text" />
 </android.support.design.widget.TextInputLayout>
     </android.support.design.widget.AppBarLayout>

@@ -34,7 +34,7 @@
     <string name="tx_slide_description_4">Search using your Clipboard history with a Single Click</string>
 
     <string name="tx_slide_title_5">Popup Bubbles</string>
-    <string name="tx_slide_description_5">Instantly Search, Translate, Call, Share etc with the currently copied or other Clipboard items</string>
+    <string name="tx_slide_description_5">Instantly Search, Translate, Sms, Call, Locate and Share the currently copied or other Clipboard items</string>
 
     // Strings Related to ClipDialogFragment
     <string name="tx_newclip">New Clip</string>
