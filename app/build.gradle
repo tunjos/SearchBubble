@@ -54,6 +54,7 @@ android {
 dependencies {
     final SUPPORT_LIBRARY_VERSION = '25.3.1'
     final DAGGER_VERSION = '2.10'
+    final LEAK_CANARY_VERSION = '1.5.1'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
@@ -73,9 +74,9 @@ dependencies {
     }
     compile 'com.facebook.rebound:rebound:0.3.8'
     compile 'io.realm:android-adapters:2.0.0'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$LEAK_CANARY_VERSION"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAK_CANARY_VERSION"
 }
 
 
