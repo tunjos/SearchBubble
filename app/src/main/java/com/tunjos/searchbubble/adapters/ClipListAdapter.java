@@ -1,6 +1,7 @@
 package com.tunjos.searchbubble.adapters;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,8 @@ import com.tunjos.searchbubble.others.itemtouch.ItemTouchHelperViewHolder;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
 
 /**
  * Created by tunjos on 22/06/2015.
@@ -49,15 +49,15 @@ public class ClipListAdapter extends RealmRecyclerViewAdapter<Clip> implements I
     }
 
     public class ClipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
-        @InjectView(R.id.tvText) TextView tvText;
-        @InjectView(R.id.tvDate) TextView tvDate;
-        @Optional @InjectView(R.id.imgvType) ImageView imgvType;
+        @BindView(R.id.tvText) TextView tvText;
+        @BindView(R.id.tvDate) TextView tvDate;
+        @Nullable @BindView(R.id.imgvType) ImageView imgvType;
 
         public ClipViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
 
         @Override

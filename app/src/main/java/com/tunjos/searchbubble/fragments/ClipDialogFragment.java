@@ -19,8 +19,8 @@ import com.tunjos.searchbubble.models.MyConstants;
 
 import java.util.Date;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -30,7 +30,7 @@ import static com.tunjos.searchbubble.others.MyUtils.getClipType;
  * Created by tunjos on 28/06/2015.
  */
 public class ClipDialogFragment extends DialogFragment {
-    @InjectView(R.id.edtxClip) EditText edtxClip;
+    @BindView(R.id.edtxClip) EditText edtxClip;
 
     public ClipDialogFragment() {
     }
@@ -58,7 +58,7 @@ public class ClipDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_clip, null);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         RealmConfiguration config = new RealmConfiguration.Builder().build();
         final Realm[] realm = {Realm.getInstance(config)};

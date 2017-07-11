@@ -41,8 +41,8 @@ import com.tunjos.searchbubble.services.FloatingBubbleService;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import io.realm.Case;
 import io.realm.Realm;
@@ -56,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     @Inject IabHelper mHelper;
     @Inject IabUtil iabUtil;
 
-    @InjectView(R.id.rvClipList) RecyclerView rvClipList;
-    @InjectView(R.id.toolbar)Toolbar toolbar;
-    @InjectView(R.id.edtxFilter)EditText edtxFilter;
-    @InjectView(R.id.fabAddClip)FloatingActionButton fabAddClip;
+    @BindView(R.id.rvClipList) RecyclerView rvClipList;
+    @BindView(R.id.toolbar)Toolbar toolbar;
+    @BindView(R.id.edtxFilter)EditText edtxFilter;
+    @BindView(R.id.fabAddClip)FloatingActionButton fabAddClip;
 
     private RecyclerView.LayoutManager layoutManager;
     private ClipListAdapter clipListAdapter;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         initializeDependencyInjector();
         checkFirstRun();

@@ -26,9 +26,10 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
+
 
 /**
  * Created by tunjos on 28/06/2015.
@@ -38,25 +39,25 @@ public class DonateDialogFragment extends DialogFragment {
     @Inject IabHelper mHelper;
     @Inject IabUtil iabUtil;
 
-    @InjectView(R.id.rlMilk) RelativeLayout rlMilk;
-    @InjectView(R.id.tvMilk) TextView tvMilk;
-    @InjectView(R.id.tvMilkPrice) TextView tvMilkPrice;
+    @BindView(R.id.rlMilk) RelativeLayout rlMilk;
+    @BindView(R.id.tvMilk) TextView tvMilk;
+    @BindView(R.id.tvMilkPrice) TextView tvMilkPrice;
 
-    @InjectView(R.id.rlWaterMelon) RelativeLayout rlWaterMelon;
-    @InjectView(R.id.tvWaterMelon) TextView tvWaterMelon;
-    @InjectView(R.id.tvWaterMelonPrice) TextView tvWaterMelonPrice;
+    @BindView(R.id.rlWaterMelon) RelativeLayout rlWaterMelon;
+    @BindView(R.id.tvWaterMelon) TextView tvWaterMelon;
+    @BindView(R.id.tvWaterMelonPrice) TextView tvWaterMelonPrice;
 
-    @InjectView(R.id.rlPizza) RelativeLayout rlPizza;
-    @InjectView(R.id.tvPizza) TextView tvPizza;
-    @InjectView(R.id.tvPizzaPrice) TextView tvPizzaPrice;
+    @BindView(R.id.rlPizza) RelativeLayout rlPizza;
+    @BindView(R.id.tvPizza) TextView tvPizza;
+    @BindView(R.id.tvPizzaPrice) TextView tvPizzaPrice;
 
-    @InjectView(R.id.rlSushi) RelativeLayout rlSushi;
-    @InjectView(R.id.tvSushi) TextView tvSushi;
-    @InjectView(R.id.tvSushiPrice) TextView tvSushiPrice;
+    @BindView(R.id.rlSushi) RelativeLayout rlSushi;
+    @BindView(R.id.tvSushi) TextView tvSushi;
+    @BindView(R.id.tvSushiPrice) TextView tvSushiPrice;
 
-    @InjectView(R.id.rlFryingPan) RelativeLayout rlFryingPan;
-    @InjectView(R.id.tvFryingPan) TextView tvFryingPan;
-    @InjectView(R.id.tvFryingPanPrice) TextView tvFryingPanPrice;
+    @BindView(R.id.rlFryingPan) RelativeLayout rlFryingPan;
+    @BindView(R.id.tvFryingPan) TextView tvFryingPan;
+    @BindView(R.id.tvFryingPanPrice) TextView tvFryingPanPrice;
 
 
     public DonateDialogFragment() {
@@ -74,7 +75,7 @@ public class DonateDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_donate, null);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         HashMap<String, DonateItem> items = iabUtil.getItems();
 

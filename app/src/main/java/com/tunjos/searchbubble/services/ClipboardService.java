@@ -70,7 +70,7 @@ public class ClipboardService extends Service {
         LayoutInflater layoutInflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
 
         llPopupBubbles = (LinearLayout) layoutInflater.inflate(R.layout.floating_popup, null, false);
-        ButterKnife.inject(this, llPopupBubbles);
+        ButterKnife.bind(this, llPopupBubbles);
 
         threadPool = Executors.newSingleThreadExecutor();
 

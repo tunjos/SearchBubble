@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -49,9 +50,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -87,10 +87,10 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     private boolean isShortClickable = true;
     private boolean isLongClickable = true;
 
-    @Optional @InjectView(R.id.rvClipList) RecyclerView rvClipList;
-    @Optional @InjectView(R.id.edtxFilter) EditText edtxFilter;
+    @Nullable @BindView(R.id.rvClipList) RecyclerView rvClipList;
+    @Nullable @BindView(R.id.edtxFilter) EditText edtxFilter;
 
-    @Optional @InjectView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
+    @Nullable @BindView(R.id.imgvSearchBubble) ImageView imgvSearchBubble;
     private RecyclerView.LayoutManager layoutManager;
     private ClipListAdapter clipListAdapter;
 
@@ -122,7 +122,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         imgvCloseBubble = (ImageView) layoutInflater.inflate(R.layout.close_bubble, null, false);
         llPopupBubbles = (LinearLayout) layoutInflater.inflate(R.layout.floating_popup, null, false);
 
-        ButterKnife.inject(this, llSearchBubble);
+        ButterKnife.bind(this, llSearchBubble);
 
         edtxFilter.getBackground().setColorFilter(getResources().getColor(R.color.sb_red), PorterDuff.Mode.SRC_ATOP);
 
