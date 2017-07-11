@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
@@ -238,17 +239,19 @@ public class ClipboardService extends Service {
             ClipData clipData = clipboardManager.getPrimaryClip();
             ClipData.Item item = clipData.getItemAt(0);
 
-            Realm realm = Realm.getInstance(getApplicationContext());
+            RealmConfiguration config = new RealmConfiguration.Builder().build();
+            Realm realm = Realm.getInstance(config);
 
-            int nextId = (int) (realm.where(Clip.class).maximumInt(MyConstants.FIELD_ID) + 1);
+            Number nextIdNum =  realm.where(Clip.class).max(MyConstants.FIELD_ID);
+            int nextId =  nextIdNum != null ? nextIdNum.intValue() + 1 : 0;
             String text = item.getText().toString();
             Date dateNow = new Date();
             int clipType = getClipType(text);
 
             realm.beginTransaction();
 
-            Clip clip = realm.createObject(Clip.class);
-            clip.setId(nextId);
+            Clip clip = realm.createObject(Clip.class, nextId);
+//            clip.setId(nextId);
             clip.setText(text);
             clip.setType(clipType);
             clip.setCreationDate(dateNow);

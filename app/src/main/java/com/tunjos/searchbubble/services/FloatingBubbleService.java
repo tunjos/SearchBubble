@@ -52,10 +52,13 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
+import static io.realm.Sort.DESCENDING;
 
 public class FloatingBubbleService extends Service implements ClipListAdapter.OnItemClickListener, ClipListAdapter.OnItemLongClickListener, View.OnClickListener {
     @Inject MyPreferenceManager myPreferenceManager;
@@ -132,7 +135,8 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         initializeRecyclerView();
         initializeClipListAdapter();
 
-        realm = Realm.getInstance(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        realm = Realm.getInstance(config);
 
         setListeners();
 
@@ -243,7 +247,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     }
 
     private RealmResults<Clip> getAllClips() {
-        RealmResults<Clip> clips = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING);
+        RealmResults<Clip> clips = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, DESCENDING);
         return clips;
     }
 
@@ -275,7 +279,7 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
                 if (!isLongClickable) return false;
                 isShortClickable = false;
 
-                query = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING).first().getText();
+                query = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, DESCENDING).first().getText();
                 validatePopupBubbles();
                 showPopup();
                 handler.postDelayed(new Runnable() {
@@ -496,9 +500,9 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
         if (TextUtils.isEmpty(query)) {
             getAllClips();
         } else {
-            clips = realm.where(Clip.class).contains(MyConstants.FIELD_TEXT, query, false).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING);
+            clips = realm.where(Clip.class).contains(MyConstants.FIELD_TEXT, query, Case.INSENSITIVE).findAllSorted(MyConstants.FIELD_CREATION_DATE, DESCENDING);
         }
-        realmClipAdapter.updateRealmResults(clips);
+        realmClipAdapter.updateData(clips);
         clipListAdapter.notifyDataSetChanged();
     }
 
@@ -519,15 +523,17 @@ public class FloatingBubbleService extends Service implements ClipListAdapter.On
     }
 
     private void storeSearchQuery(String query) {
-        Realm realm = Realm.getInstance(FloatingBubbleService.this);
-        int nextId = (int) (realm.where(Clip.class).maximumInt(MyConstants.FIELD_ID) + 1);
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        Realm realm = Realm.getInstance(config);
+        Number nextIdNum =  realm.where(Clip.class).max(MyConstants.FIELD_ID);
+        int nextId =  nextIdNum != null ? nextIdNum.intValue() + 1 : 0;
         Date dateNow = new Date();
         int clipType = getClipType(query);
 
         realm.beginTransaction();
 
-        Clip clip = realm.createObject(Clip.class);
-        clip.setId(nextId);
+        Clip clip = realm.createObject(Clip.class, nextId);
+//        clip.setId(nextId);
         clip.setText(query);
         clip.setType(clipType);
         clip.setCreationDate(dateNow);

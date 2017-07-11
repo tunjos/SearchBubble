@@ -3,11 +3,13 @@ package com.tunjos.searchbubble.models;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by tunjos on 22/06/2015.
  */
-public class Clip extends RealmObject{
+public class Clip extends RealmObject {
+    @PrimaryKey
     private int id;
     private String text;
     private int type;

@@ -10,6 +10,7 @@ import com.tunjos.searchbubble.di.components.PersistenceComponent;
 import com.tunjos.searchbubble.di.modules.ContextModule;
 
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
 
 /**
  * Created by tunjos on 28/06/2015.
@@ -24,6 +25,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LeakCanary.install(this);
+        Realm.init(this);
 
 //        Disable Debug Crash Logging
         CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();

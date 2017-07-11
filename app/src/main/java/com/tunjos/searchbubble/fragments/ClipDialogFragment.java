@@ -22,6 +22,7 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 import static com.tunjos.searchbubble.others.MyUtils.getClipType;
 
@@ -59,7 +60,8 @@ public class ClipDialogFragment extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_clip, null);
         ButterKnife.inject(this, view);
 
-        final Realm[] realm = {Realm.getInstance(getActivity())};
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        final Realm[] realm = {Realm.getInstance(config)};
 
         final int type = getArguments().getInt(MyConstants.EXTRA_TYPE);
         int clipId = getArguments().getInt(MyConstants.EXTRA_CLIP_ID);
@@ -85,14 +87,15 @@ public class ClipDialogFragment extends DialogFragment {
 
                                 if (type == MyConstants.CLIP_DIALOG_NEW) {
 
-                                    int nextId = (int) (realm[0].where(Clip.class).maximumInt(MyConstants.FIELD_ID) + 1);
+                                    Number nextIdNum =  realm[0].where(Clip.class).max(MyConstants.FIELD_ID);
+                                    int nextId =  nextIdNum != null ? nextIdNum.intValue() + 1 : 0;
                                     Date dateNow = new Date();
                                     int clipType = getClipType(text);
 
                                     realm[0].beginTransaction();
 
-                                    Clip clip = realm[0].createObject(Clip.class);
-                                    clip.setId(nextId);
+                                    Clip clip = realm[0].createObject(Clip.class, nextId);
+//                                    clip.setId(nextId);
                                     clip.setText(text);
                                     clip.setType(clipType);
                                     clip.setCreationDate(dateNow);

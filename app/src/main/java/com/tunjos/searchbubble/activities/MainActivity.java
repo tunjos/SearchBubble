@@ -44,8 +44,11 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 public class MainActivity extends AppCompatActivity implements ClipListAdapter.OnItemClickListener, ClipDialogFragment.ClipSavedListener, ClipListAdapter.OnItemDismissListener {
@@ -82,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         initializeRecyclerView();
         initializeClipListAdapter();
 
-        realm = Realm.getInstance(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        realm = Realm.getInstance(config);
 
         setListeners();
         checkAutoLaunchBubble();
@@ -192,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
     }
 
     private RealmResults<Clip> getAllClips() {
-        clips = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING);
+        clips = realm.where(Clip.class).findAllSorted(MyConstants.FIELD_CREATION_DATE, Sort.DESCENDING);
         return clips;
     }
 
@@ -200,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         if (TextUtils.isEmpty(query)) {
             getAllClips();
         } else {
-            clips = realm.where(Clip.class).contains(MyConstants.FIELD_TEXT, query, false).findAllSorted(MyConstants.FIELD_CREATION_DATE, RealmResults.SORT_ORDER_DESCENDING);
+            clips = realm.where(Clip.class).contains(MyConstants.FIELD_TEXT, query, Case.INSENSITIVE).findAllSorted(MyConstants.FIELD_CREATION_DATE, Sort.DESCENDING);
         }
-        realmClipAdapter.updateRealmResults(clips);
+        realmClipAdapter.updateData(clips);
         clipListAdapter.notifyDataSetChanged();
     }
 
@@ -319,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements ClipListAdapter.O
         tempClip.setType(clip.getType());
 
         realm.beginTransaction();
-        clip.removeFromRealm();
+        clip.deleteFromRealm();
         realm.commitTransaction();
 
         Snackbar.make(fabAddClip, R.string.tx_clip_deleted, Snackbar.LENGTH_LONG)
