@@ -67,7 +67,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     compile 'javax.annotation:javax.annotation-api:1.2'
     compile 'com.github.gabrielemariotti.changeloglib:changelog:2.0.0'
-    compile 'com.github.paolorotolo:appintro:3.1.0'
+    compile 'com.github.apl-devs:appintro:v4.2.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
