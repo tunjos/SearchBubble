@@ -8,7 +8,7 @@ Search Bubble allows you to Search with a Bubble. It's thats simple.
 In addition, it can auto store your clipboard history for one click searching from anywhere at anytime.
 
 * For more information please visit [**searchubble.co**](http://www.searchbubble.co)
-* madeasy by [**tunjos**](http://www.tunjos.com)
+* madeasy by [**tunjos**](http://www.tunjos.co)
 
 
 ### Playstore Download
